@@ -8,5 +8,10 @@ public class DatabaseStrings {
     public static final String FIELD_DA_ORA = "da_ora";
     public static final String FIELD_A_ORA = "a_ora";
     public static final String FIELD_ORE_TOTALI = "ore_totali";
+    public static final String FIELD_NOME = "nome";
+    public static final String FIELD_ORA_INIZIO = "ora_inizio";
+    public static final String FIELD_ORA_FINE = "ora_fine";
+    public static final String FIELD_ORE_PAUSA = "ore_pausa";
     public static final String TBL_NAME = "Orario";
+    public static final String TBL_NAME_IMPOSTAZIONI = "Impostazioni";
 }

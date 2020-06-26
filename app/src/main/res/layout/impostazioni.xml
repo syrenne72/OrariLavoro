@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Impostazioni">
+
+    <TextView
+        android:id="@+id/tvTitolo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_form_child"
+        android:gravity="center"
+        android:textSize="@dimen/text_medium"
+        android:textColor="@color/dGrigio"
+        android:text="Impostazioni"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/padding_form_child"
+        android:layout_below="@id/tvTitolo">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nome: "/>
+
+            <EditText
+                android:id="@+id/etNome"
+                android:layout_width="@dimen/edittext_w_max"
+                android:layout_height="wrap_content"
+                android:gravity="end"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ora di inizio: "/>
+
+            <EditText
+                android:id="@+id/etInizio"
+                android:layout_width="@dimen/edittext_w_min"
+                android:layout_height="wrap_content"
+                android:gravity="end"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/padding_form_child"
+                android:text="Ora di fine: "/>
+
+            <EditText
+                android:id="@+id/etFine"
+                android:layout_width="@dimen/edittext_w_min"
+                android:layout_height="wrap_content"
+                android:gravity="end"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Durata pausa pranzo: "/>
+
+            <EditText
+                android:id="@+id/etPausa"
+                android:layout_width="@dimen/edittext_w_min"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btnConfermaModifica"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/padding_form_child"
+            android:layout_marginBottom="@dimen/padding_form_child"
+            android:padding="10dp"
+            android:layout_gravity="end"
+            android:background="@drawable/stile_bottone_completo"
+            android:src="@drawable/confirm"
+            android:textColor="@color/dRosso"
+            android:onClick="confermaDati"/>
+
+    </LinearLayout>
+</RelativeLayout>

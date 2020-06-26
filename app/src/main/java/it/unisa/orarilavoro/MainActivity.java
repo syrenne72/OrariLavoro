@@ -52,4 +52,11 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(getApplicationContext(), VisualizzaOrariActivity.class);
         startActivity(i);
     }
+
+    public void impostazioni(View view) {
+        Log.i("KIWIBUNNY", "Chiamato impostazioni");
+
+        Intent i = new Intent(getApplicationContext(), Impostazioni.class);
+        startActivity(i);
+    }
 }

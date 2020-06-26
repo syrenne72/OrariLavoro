@@ -32,6 +32,7 @@ public class AggiungiUnOrarioActivity extends AppCompatActivity {
     private DbManager dbManager;
     private CursorAdapter adapter;
     private Cursor cursorOrari;
+    private Cursor cursorImpostazioni;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,13 +104,23 @@ public class AggiungiUnOrarioActivity extends AppCompatActivity {
             }
         });
 
-        /*Inizializzo il form dell'orario con i dati di oggi preimpostati*/
-        setEditText(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH) + 1, Calendar.getInstance().get(Calendar.DAY_OF_MONTH), 8, 18, 9, -1);
-
         dbManager = new DbManager(this);
-
-        //Prendo gli ultimi 10 orari e li mostro
+        cursorImpostazioni = dbManager.findImpostazioni();
         cursorOrari = dbManager.primiDieciOrari();
+
+        if(!cursorImpostazioni.moveToNext())
+            /*Inizializzo il form dell'orario con i dati di oggi preimpostati*/
+            setEditText(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH) + 1, Calendar.getInstance().get(Calendar.DAY_OF_MONTH), 8, 18, 9, -1);
+        else {
+            int totale = cursorImpostazioni.getInt(cursorImpostazioni.getColumnIndex(DatabaseStrings.FIELD_ORA_FINE))
+                    - cursorImpostazioni.getInt(cursorImpostazioni.getColumnIndex(DatabaseStrings.FIELD_ORA_INIZIO))
+                    - cursorImpostazioni.getInt(cursorImpostazioni.getColumnIndex(DatabaseStrings.FIELD_ORE_PAUSA));
+
+            setEditText(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH) + 1,
+                    Calendar.getInstance().get(Calendar.DAY_OF_MONTH),
+                    cursorImpostazioni.getInt(cursorImpostazioni.getColumnIndex(DatabaseStrings.FIELD_ORA_INIZIO)),
+                    cursorImpostazioni.getInt(cursorImpostazioni.getColumnIndex(DatabaseStrings.FIELD_ORA_FINE)), totale, -1);
+        }
 
         refreshListView();
     }

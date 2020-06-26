@@ -60,6 +60,24 @@ public class DbManager {
         }
     }
 
+    public void saveImpostazioni(String n, int i, int f, int p) {
+        SQLiteDatabase db = dbhelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(DatabaseStrings.FIELD_NOME, n);
+        cv.put(DatabaseStrings.FIELD_ORA_INIZIO, i);
+        cv.put(DatabaseStrings.FIELD_ORA_FINE, f);
+        cv.put(DatabaseStrings.FIELD_ORE_PAUSA, p);
+
+        try {
+            db.delete(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, null, null);
+            db.insert(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, null, cv);
+            Log.i("KIWIBUNNY", this.getClass().getSimpleName() + " inserimento completato");
+        }
+        catch (SQLiteException sqle) {
+            sqle.printStackTrace();
+        }
+    }
+
     public boolean delete(int id) {
         SQLiteDatabase db = dbhelper.getWritableDatabase();
 
@@ -130,6 +148,19 @@ public class DbManager {
         MyResult myResult = new MyResult(crs, tot, x);
 
         return myResult;
+    }
+
+    public Cursor findImpostazioni() {
+        Cursor crs = null;
+
+        try {
+            SQLiteDatabase db = dbhelper.getReadableDatabase();
+            crs = db.query(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, null, null, null, null, null, null, null);
+        } catch(SQLiteException sqle) {
+            sqle.printStackTrace();
+        }
+
+        return crs;
     }
 
     public Cursor findById(int id) {
