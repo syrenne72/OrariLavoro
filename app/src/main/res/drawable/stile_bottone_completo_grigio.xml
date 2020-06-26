@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true"
+        android:drawable="@drawable/stile_bottone_cliccato_grigio" />
+    <item android:state_pressed="false"
+        android:drawable="@drawable/stile_bottone_grigio" />
+    <item android:drawable="@drawable/stile_bottone_grigio" />
+</selector>

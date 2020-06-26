@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".VisualizzaOrariActivity">
+
+    <LinearLayout
+        android:id="@+id/llRicerca"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/mlGrigio">
+
+        <TextView
+            android:id="@+id/tvRicerca"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/padding_form_child"
+            android:layout_marginRight="@dimen/padding_form_child"
+            android:layout_marginLeft="@dimen/padding_form_child"
+            android:layout_alignParentTop="true"
+            android:textSize="17dp"
+            android:fontFamily="@font/roboto_black"
+            android:textColor="@color/dGrigio"
+            android:text="Ricerca:"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/tvRicerca">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/padding_form_child"
+                android:layout_gravity="center"
+                android:text="Da data: "/>
+
+            <EditText
+                android:id="@+id/etDaGiorno"
+                android:layout_width="@dimen/edittext_w_max"
+                android:layout_height="@dimen/edittext_h"
+                android:layout_marginRight="@dimen/padding_form_child"
+                android:layout_gravity="center"
+                android:focusable="false"
+                android:maxLines="1"
+                android:textAlignment="textEnd"
+                android:inputType="none"
+                android:textSize="@dimen/text_small"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/padding_form_child"
+                android:layout_gravity="center"
+                android:text="A data: "/>
+
+            <EditText
+                android:id="@+id/etAGiorno"
+                android:layout_width="@dimen/edittext_w_max"
+                android:layout_height="@dimen/edittext_h"
+                android:layout_marginRight="@dimen/margin_small"
+                android:layout_gravity="center"
+                android:focusable="false"
+                android:maxLines="1"
+                android:inputType="none"
+                android:textSize="@dimen/text_small"/>
+
+            <ImageButton
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginRight="@dimen/padding_form_child"
+                android:layout_gravity="center"
+                android:background="@drawable/stile_bottone_completo_grigio"
+                android:src="@drawable/search"
+                android:onClick="cercaDati"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/lvOrariTotali"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/llRicerca"
+        android:layout_above="@id/llTotaleOre"/>
+
+    <LinearLayout
+        android:id="@+id/llTotaleOre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:gravity="right"
+        android:background="@color/mlGrigio">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stampa"
+            android:onClick="stampa"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/padding_form_child"
+            android:textColor="@color/dGrigio"
+            android:textSize="@dimen/text_medium"
+            android:text="Totale ore:"/>
+
+        <TextView
+            android:id="@+id/tvTotaleOre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/padding_form_child"
+            android:layout_marginBottom="@dimen/padding_form_child"
+            android:layout_marginRight="@dimen/padding_form_child"
+            android:textSize="@dimen/text_medium"
+            android:text="0"/>
+    </LinearLayout>
+</RelativeLayout>

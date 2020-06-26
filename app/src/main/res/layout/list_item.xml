@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_small"
+            android:textSize="@dimen/text_medium_max"
+            android:textColor="@color/dGrigio"
+            android:text="Data:"/>
+
+        <TextView
+            android:id="@+id/tvData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_small"
+            android:textSize="@dimen/text_medium_max"
+            android:text="06/06/2020"/>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_alignParentLeft="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_small"
+                android:textSize="@dimen/text_medium"
+                android:textColor="@color/dGrigio"
+                android:text="Dalle:"/>
+
+            <TextView
+                android:id="@+id/tvDaOra"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_small"
+                android:text="00:00"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_small"
+                android:textSize="@dimen/text_medium"
+                android:textColor="@color/dGrigio"
+                android:text="Alle:"/>
+
+            <TextView
+                android:id="@+id/tvAOra"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_small"
+                android:text="00:00"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_small"
+                android:textSize="@dimen/text_medium"
+                android:textColor="@color/dGrigio"
+                android:text="Totale:"/>
+
+            <TextView
+                android:id="@+id/tvTotale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_small"
+                android:text="1"/>
+
+            <TextView
+                android:visibility="invisible"
+                android:id="@+id/tvId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_alignParentRight="true">
+
+            <ImageButton
+                android:id="@+id/btnModifica"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_margin="@dimen/margin_small"
+                android:background="@drawable/stile_bottone_completo_grigio"
+                android:src="@drawable/edit"/>
+
+            <ImageButton
+                android:id="@+id/btnCancella"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_margin="@dimen/margin_small"
+                android:background="@drawable/stile_bottone_completo"
+                android:src="@drawable/trash"/>
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>

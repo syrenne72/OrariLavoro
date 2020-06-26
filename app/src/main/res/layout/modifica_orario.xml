@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ModificaOrarioActivity">
+
+    <LinearLayout
+        android:id="@+id/llFormOrario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/padding_form_child"
+        android:background="@color/vlGrigio">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/padding_form_child"
+            android:textSize="20dp"
+            android:fontFamily="@font/roboto_black"
+            android:textColor="@color/dGrigio"
+            android:text="Inserisci i tuoi dati:"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvId"
+                android:visibility="invisible"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="0dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/padding_form_child"
+                android:fontFamily="@font/roboto_regular"
+                android:text="Anno:"/>
+
+            <EditText
+                android:id="@+id/etAnno"
+                android:layout_width="@dimen/edittext_w"
+                android:layout_height="@dimen/edittext_h"
+                android:hint="2020"
+                android:inputType="number"
+                android:text=""
+                android:textAlignment="textEnd"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/padding_form_child"
+                android:text="Mese:"/>
+
+            <EditText
+                android:id="@+id/etMese"
+                android:layout_width="@dimen/edittext_w_min"
+                android:layout_height="@dimen/edittext_h"
+                android:inputType="number"
+                android:hint="01"
+                android:text=""
+                android:textAlignment="textEnd"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/padding_form_child"
+                android:text="Giorno:"/>
+
+            <EditText
+                android:id="@+id/etGiorno"
+                android:layout_width="@dimen/edittext_w_min"
+                android:layout_height="@dimen/edittext_h"
+                android:inputType="number"
+                android:hint="01"
+                android:text=""
+                android:textAlignment="textEnd"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/padding_form_child"
+                android:text="Dalle ore:"/>
+
+            <EditText
+                android:id="@+id/etDaOra"
+                android:layout_width="@dimen/edittext_w_min"
+                android:layout_height="@dimen/edittext_h"
+                android:hint="7"
+                android:inputType="number"
+                android:text=""
+                android:textAlignment="textEnd"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/padding_form_child"
+                android:text="Alle ore:"/>
+
+            <EditText
+                android:id="@+id/etAOra"
+                android:layout_width="@dimen/edittext_w_min"
+                android:layout_height="@dimen/edittext_h"
+                android:hint="18"
+                android:inputType="number"
+                android:text=""
+                android:textAlignment="textEnd"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/padding_form_child"
+                android:text="Totale ore:"/>
+
+            <EditText
+                android:id="@+id/etTotale"
+                android:layout_width="@dimen/edittext_w_min"
+                android:layout_height="@dimen/edittext_h"
+                android:inputType="number"
+                android:hint="1"
+                android:text=""
+                android:textAlignment="textEnd"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llModifica"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/llFormOrario"
+        android:gravity="right">
+
+        <ImageButton
+            android:id="@+id/btnIndietro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/padding_form_child"
+            android:layout_marginBottom="@dimen/padding_form_child"
+            android:padding="10dp"
+            android:background="@drawable/stile_bottone_completo"
+            android:src="@drawable/back"
+            android:textColor="@color/dRosso"
+            android:onClick="indietro"/>
+
+        <ImageButton
+            android:id="@+id/btnConfermaModifica"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/padding_form_child"
+            android:layout_marginBottom="@dimen/padding_form_child"
+            android:padding="10dp"
+            android:background="@drawable/stile_bottone_completo"
+            android:src="@drawable/confirm"
+            android:textColor="@color/dRosso"
+            android:onClick="confermaDatiModificati"/>
+    </LinearLayout>
+
+</RelativeLayout>
