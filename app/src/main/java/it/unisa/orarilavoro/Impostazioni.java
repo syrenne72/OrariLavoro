@@ -28,7 +28,7 @@ public class Impostazioni extends AppCompatActivity {
         dbManager = new DbManager(this);
         crs = dbManager.findImpostazioni();
 
-        if(crs.moveToNext()) {
+        if(crs != null && crs.moveToNext()) {
             etInizio.setText("" + crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORA_INIZIO)));
             etFine.setText("" + crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORA_FINE)));
             etPausa.setText("" + crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORE_PAUSA)));

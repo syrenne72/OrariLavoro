@@ -3,113 +3,151 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical">
+    android:orientation="horizontal">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+    <ImageView
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_marginRight="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_marginTop="11dp"
+        android:src="@drawable/gear"/>
 
-        <TextView
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_small"
-            android:textSize="@dimen/text_medium_max"
-            android:textColor="@color/dGrigio"
-            android:text="Data:"/>
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tvData"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_small"
-            android:textSize="@dimen/text_medium_max"
-            android:text="06/06/2020"/>
-    </LinearLayout>
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:layout_alignParentLeft="true">
+            <LinearLayout
+                android:id="@+id/llData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_small"
-                android:textSize="@dimen/text_medium"
+                android:layout_marginLeft="@dimen/margin_smaller"
+                android:layout_marginRight="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/margin_smaller"
+                android:layout_marginTop="@dimen/margin_smaller"
+                android:textSize="@dimen/text_medium_max"
                 android:textColor="@color/dGrigio"
-                android:text="Dalle:"/>
+                android:text="Data:"/>
 
             <TextView
-                android:id="@+id/tvDaOra"
+                android:id="@+id/tvData"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_small"
-                android:text="00:00"/>
+                android:layout_margin="@dimen/margin_smaller"
+                android:textSize="@dimen/text_medium_max"
+                android:text="06/06/2020"/>
+            </LinearLayout>
 
-            <TextView
+            <LinearLayout
+                android:id="@+id/llOre"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_small"
-                android:textSize="@dimen/text_medium"
-                android:textColor="@color/dGrigio"
-                android:text="Alle:"/>
+                android:orientation="horizontal"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@id/llData">
 
-            <TextView
-                android:id="@+id/tvAOra"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_smaller"
+                    android:layout_marginRight="@dimen/margin_small"
+                    android:textSize="@dimen/text_medium"
+                    android:textColor="@color/dGrigio"
+                    android:text="Dalle:"/>
+
+                <TextView
+                    android:id="@+id/tvDaOra"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_small"
+                    android:layout_marginRight="@dimen/margin_small"
+                    android:text="00:00"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/padding_form_child"
+                    android:layout_marginRight="@dimen/margin_small"
+                    android:textSize="@dimen/text_medium"
+                    android:textColor="@color/dGrigio"
+                    android:text="Alle:"/>
+
+                <TextView
+                    android:id="@+id/tvAOra"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_small"
+                    android:layout_marginRight="@dimen/margin_small"
+                    android:text="00:00"/>
+
+                <TextView
+                    android:visibility="invisible"
+                    android:id="@+id/tvId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_small"
-                android:text="00:00"/>
+                android:orientation="horizontal"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@id/llOre">
 
-            <TextView
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_small"
+                    android:layout_marginLeft="@dimen/margin_smaller"
+                    android:layout_marginRight="@dimen/margin_small"
+                    android:textSize="@dimen/text_medium"
+                    android:textColor="@color/dRosso"
+                    android:text="Totale:"/>
+
+                <TextView
+                    android:id="@+id/tvTotale"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_small"
+                    android:layout_marginLeft="@dimen/margin_small"
+                    android:layout_marginRight="@dimen/margin_small"
+                    android:text="1"/>
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_small"
-                android:textSize="@dimen/text_medium"
-                android:textColor="@color/dGrigio"
-                android:text="Totale:"/>
+                android:orientation="horizontal"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true">
 
-            <TextView
-                android:id="@+id/tvTotale"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_small"
-                android:text="1"/>
+                <ImageButton
+                    android:id="@+id/btnModifica"
+                    android:layout_width="@dimen/button_small"
+                    android:layout_height="@dimen/button_small"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginRight="@dimen/margin_small"
+                    android:layout_marginLeft="@dimen/margin_small"
+                    android:layout_marginBottom="@dimen/margin_small"
+                    android:background="@drawable/stile_bottone_completo_grigio"
+                    android:src="@drawable/edit"/>
 
-            <TextView
-                android:visibility="invisible"
-                android:id="@+id/tvId"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:layout_alignParentRight="true">
-
-            <ImageButton
-                android:id="@+id/btnModifica"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_margin="@dimen/margin_small"
-                android:background="@drawable/stile_bottone_completo_grigio"
-                android:src="@drawable/edit"/>
-
-            <ImageButton
-                android:id="@+id/btnCancella"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_margin="@dimen/margin_small"
-                android:background="@drawable/stile_bottone_completo"
-                android:src="@drawable/trash"/>
-        </LinearLayout>
-    </RelativeLayout>
+                <ImageButton
+                    android:id="@+id/btnCancella"
+                    android:layout_width="@dimen/button_small"
+                    android:layout_height="@dimen/button_small"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginRight="@dimen/margin_small"
+                    android:layout_marginLeft="@dimen/margin_small"
+                    android:layout_marginBottom="@dimen/margin_small"
+                    android:background="@drawable/stile_bottone_completo"
+                    android:src="@drawable/trash"/>
+            </LinearLayout>
+        </RelativeLayout>
 </LinearLayout>

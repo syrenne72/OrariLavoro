@@ -86,8 +86,8 @@
 
         <ImageButton
             android:id="@+id/btnConfermaModifica"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/button_small"
+            android:layout_height="@dimen/button_small"
             android:layout_marginRight="@dimen/padding_form_child"
             android:layout_marginBottom="@dimen/padding_form_child"
             android:padding="10dp"

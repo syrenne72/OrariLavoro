@@ -40,6 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/padding_form_child"
                 android:fontFamily="@font/roboto_regular"
+                android:textSize="@dimen/text_medium"
                 android:text="Anno:"/>
 
             <EditText
@@ -48,6 +49,7 @@
                 android:layout_height="@dimen/edittext_h"
                 android:hint="2020"
                 android:inputType="number"
+                android:textSize="@dimen/text_medium"
                 android:text=""
                 android:textAlignment="textEnd"/>
 
@@ -145,8 +147,8 @@
 
         <ImageButton
             android:id="@+id/btnConferma"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/button_small"
+            android:layout_height="@dimen/button_small"
             android:layout_marginRight="@dimen/padding_form_child"
             android:layout_marginBottom="@dimen/padding_form_child"
             android:padding="10dp"
@@ -168,8 +170,8 @@
 
         <ImageButton
             android:id="@+id/btnIndietro"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/button_small"
+            android:layout_height="@dimen/button_small"
             android:layout_marginRight="@dimen/padding_form_child"
             android:layout_marginBottom="@dimen/padding_form_child"
             android:padding="10dp"
@@ -180,8 +182,8 @@
 
         <ImageButton
             android:id="@+id/btnConfermaModifica"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/button_small"
+            android:layout_height="@dimen/button_small"
             android:layout_marginRight="@dimen/padding_form_child"
             android:layout_marginBottom="@dimen/padding_form_child"
             android:padding="10dp"

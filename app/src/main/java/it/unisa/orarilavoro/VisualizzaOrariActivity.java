@@ -108,12 +108,6 @@ public class VisualizzaOrariActivity extends AppCompatActivity {
         /*Stampa delle pagine*/
         for(int i = 0; i < pagine; i++) {
             for (int j = 0; j < 30; j++) {
-
-                if (!cursorOrari.moveToNext()) {
-                    fineStampa = !fineStampa;
-                    break;
-                }
-
                 int anno, mese, giorno, daOra, aOra, totale;
 
                 anno = cursorOrari.getInt(cursorOrari.getColumnIndex(DatabaseStrings.FIELD_ANNO));
@@ -129,6 +123,12 @@ public class VisualizzaOrariActivity extends AppCompatActivity {
 
                 //Calcolo lo spostamento verticale da cui partire per la prossima scritta
                 y += myPaint.descent() - myPaint.ascent();
+
+                //Passo al prossimo dato
+                if (!cursorOrari.moveToNext()) {
+                    fineStampa = !fineStampa;
+                    break;
+                }
             }
 
             if (!fineStampa) {

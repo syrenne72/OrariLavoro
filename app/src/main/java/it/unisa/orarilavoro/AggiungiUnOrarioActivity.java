@@ -2,7 +2,6 @@ package it.unisa.orarilavoro;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
@@ -108,7 +107,7 @@ public class AggiungiUnOrarioActivity extends AppCompatActivity {
         cursorImpostazioni = dbManager.findImpostazioni();
         cursorOrari = dbManager.primiDieciOrari();
 
-        if(!cursorImpostazioni.moveToNext())
+        if(cursorImpostazioni == null || !cursorImpostazioni.moveToNext())
             /*Inizializzo il form dell'orario con i dati di oggi preimpostati*/
             setEditText(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH) + 1, Calendar.getInstance().get(Calendar.DAY_OF_MONTH), 8, 18, 9, -1);
         else {
