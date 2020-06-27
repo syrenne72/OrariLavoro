@@ -60,7 +60,7 @@ public class DbManager {
         }
     }
 
-    public void saveImpostazioni(String n, int i, int f, int p) {
+    public boolean saveImpostazioni(String n, int i, int f, int p) {
         SQLiteDatabase db = dbhelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(DatabaseStrings.FIELD_NOME, n);
@@ -70,12 +70,14 @@ public class DbManager {
 
         try {
             db.delete(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, null, null);
-            db.insert(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, null, cv);
-            Log.i("KIWIBUNNY", this.getClass().getSimpleName() + " inserimento completato");
+            if(db.insert(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, null, cv) > 0)
+                return true;
         }
         catch (SQLiteException sqle) {
             sqle.printStackTrace();
         }
+
+        return false;
     }
 
     public boolean delete(int id) {

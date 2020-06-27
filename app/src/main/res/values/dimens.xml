@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="padding_form_child">10dp</dimen>
+    <dimen name="margin_medium">10dp</dimen>
     <dimen name="margin_small">5dp</dimen>
     <dimen name="margin_smaller">2dp</dimen>
     <dimen name="edittext_h">45dp</dimen>
     <dimen name="edittext_w">60dp</dimen>
     <dimen name="edittext_w_min">30dp</dimen>
     <dimen name="edittext_w_max">90dp</dimen>
+    <dimen name="text_large">25dp</dimen>
+    <dimen name="text_large_min">22dp</dimen>
     <dimen name="text_medium_max">19dp</dimen>
     <dimen name="text_medium">17dp</dimen>
     <dimen name="text_small">14dp</dimen>
     <dimen name="text_small_min">12dp</dimen>
     <dimen name="button_small">45dp</dimen>
+    <dimen name="button_small_h">30dp</dimen>
 </resources>

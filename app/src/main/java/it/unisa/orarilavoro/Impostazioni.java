@@ -56,6 +56,9 @@ public class Impostazioni extends AppCompatActivity {
             return;
         }
 
-        dbManager.saveImpostazioni(n, i, f, p);
+        if(dbManager.saveImpostazioni(n, i, f, p))
+            Toast.makeText(getApplicationContext(), "Impostazioni salvate", Toast.LENGTH_SHORT).show();
+        else
+            Toast.makeText(getApplicationContext(), "Si è verificato un errore", Toast.LENGTH_SHORT).show();
     }
 }

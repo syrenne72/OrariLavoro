@@ -20,7 +20,7 @@
             android:layout_marginRight="@dimen/padding_form_child"
             android:layout_marginLeft="@dimen/padding_form_child"
             android:layout_alignParentTop="true"
-            android:textSize="17dp"
+            android:textSize="@dimen/text_large"
             android:fontFamily="@font/roboto_black"
             android:textColor="@color/dGrigio"
             android:text="Ricerca:"/>
@@ -37,6 +37,7 @@
                 android:layout_marginLeft="@dimen/padding_form_child"
                 android:layout_gravity="center"
                 android:textColor="@color/pGrigio"
+                android:textSize="@dimen/text_medium"
                 android:text="Da data: "/>
 
             <EditText
@@ -56,6 +57,7 @@
                 android:layout_marginLeft="@dimen/padding_form_child"
                 android:layout_gravity="center"
                 android:textColor="@color/pGrigio"
+                android:textSize="@dimen/text_medium"
                 android:text="A data: "/>
 
             <EditText
@@ -70,8 +72,8 @@
                 android:textSize="@dimen/text_small"/>
 
             <ImageButton
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/button_small"
+                android:layout_height="@dimen/button_small_h"
                 android:layout_marginRight="@dimen/padding_form_child"
                 android:layout_gravity="center"
                 android:background="@drawable/stile_bottone_completo_grigio"
@@ -99,8 +101,8 @@
         android:background="@color/mlGrigio">
 
         <ImageButton
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="@dimen/button_small"
+            android:layout_height="@dimen/button_small_h"
             android:layout_gravity="center"
             android:layout_marginLeft="@dimen/padding_form_child"
             android:layout_marginTop="@dimen/margin_small"
@@ -113,7 +115,6 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_margin="@dimen/margin_smaller"
             android:gravity="right"
             android:layout_gravity="center">
 
@@ -122,7 +123,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/padding_form_child"
                 android:textColor="@color/dRosso"
-                android:textSize="@dimen/text_medium_max"
+                android:textSize="@dimen/text_large"
                 android:fontFamily="@font/roboto_black"
                 android:text="Totale ore:"/>
 
@@ -130,8 +131,9 @@
                 android:id="@+id/tvTotaleOre"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_medium"
                 android:layout_marginRight="@dimen/padding_form_child"
-                android:textSize="@dimen/text_medium_max"
+                android:textSize="@dimen/text_large"
                 android:text="0"/>
 
         </LinearLayout>

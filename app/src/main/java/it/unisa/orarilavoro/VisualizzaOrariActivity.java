@@ -146,8 +146,19 @@ public class VisualizzaOrariActivity extends AppCompatActivity {
 
         /*******/
 
-        String myFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + "/Orari_di_lavoro.pdf";
+        String myFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + "/Orari di lavoro.pdf";
         File myFile = new File(myFilePath);
+        int i = 0;
+
+        while(i >= 0) {
+            if (myFile.exists()) {
+                i++;
+                myFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + "/Orari di lavoro (" + i + ").pdf";
+                myFile = new File(myFilePath);
+            } else
+                break;
+        }
+
         try {
             myPdfDocument.writeTo(new FileOutputStream(myFile));
         }
@@ -169,7 +180,7 @@ public class VisualizzaOrariActivity extends AppCompatActivity {
         String dataDa = etDaGiorno.getText().toString();
         String dataA = etAGiorno.getText().toString();
 
-        if(dataDa == null || dataA == null) {
+        if(dataDa.length() == 0 || dataA.length() == 0) {
             Toast.makeText(getApplicationContext(), "Inserire le date per la ricerca", Toast.LENGTH_SHORT).show();
             return;
         }
