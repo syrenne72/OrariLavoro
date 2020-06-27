@@ -100,6 +100,11 @@
         android:layout_alignParentBottom="true"
         android:background="@color/mlGrigio">
 
+        <EditText
+            android:id="@+id/etNomePdf"
+            android:layout_width="@dimen/edittext_w_max"
+            android:layout_height="@dimen/edittext_h"/>
+
         <ImageButton
             android:layout_width="@dimen/button_small"
             android:layout_height="@dimen/button_small_h"

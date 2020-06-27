@@ -38,7 +38,7 @@ import java.util.Calendar;
 public class VisualizzaOrariActivity extends AppCompatActivity {
     private ListView lvOrariTotali;
     private TextView tvTotaleOre;
-    private EditText etDaGiorno, etAGiorno;
+    private EditText etDaGiorno, etAGiorno, etNomePdf;
     private DatePickerDialog picker;
 
     private DbManager dbManager;
@@ -58,6 +58,7 @@ public class VisualizzaOrariActivity extends AppCompatActivity {
         tvTotaleOre = findViewById(R.id.tvTotaleOre);
         etDaGiorno = findViewById(R.id.etDaGiorno);
         etAGiorno = findViewById(R.id.etAGiorno);
+        etNomePdf = findViewById(R.id.etNomePdf);
 
         dbManager = new DbManager(this);
 
@@ -79,10 +80,13 @@ public class VisualizzaOrariActivity extends AppCompatActivity {
      * @param view
      */
     public void stampa(View view) {
-        String stampa = "";
+        String stampa = "", nomePdf = "/Orari lavoro/Orari di lavoro";
         String da = etDaGiorno.getText().toString();
         String a = etAGiorno.getText().toString();
         boolean fineStampa = false;
+
+        if(etNomePdf.getText().toString().length() != 0)
+            nomePdf = "/Orari lavoro/" + etNomePdf.getText().toString();
 
         //Numero di pagine
         int pagine = myResult.getDatiTotali() / 30 + 1;
@@ -101,6 +105,9 @@ public class VisualizzaOrariActivity extends AppCompatActivity {
             stampa = "ORARI DI LAVORO DAL " + da + " AL " + a;
 
         cursorOrari.moveToFirst();
+
+        if(cursorOrari.isNull(0))
+            return;
 
         myPage.getCanvas().drawText(stampa, x, y, myPaint);
         y += myPaint.descent() - myPaint.ascent() + 10;
@@ -146,14 +153,14 @@ public class VisualizzaOrariActivity extends AppCompatActivity {
 
         /*******/
 
-        String myFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + "/Orari di lavoro.pdf";
+        String myFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + nomePdf + ".pdf";
         File myFile = new File(myFilePath);
         int i = 0;
 
         while(i >= 0) {
             if (myFile.exists()) {
                 i++;
-                myFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + "/Orari di lavoro (" + i + ").pdf";
+                myFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + nomePdf + " (" + i + ").pdf";
                 myFile = new File(myFilePath);
             } else
                 break;
@@ -169,7 +176,7 @@ public class VisualizzaOrariActivity extends AppCompatActivity {
         }
 
         myPdfDocument.close();
-        Toast.makeText(getApplicationContext(), "PDF creato in " + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "PDF creato in " + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + "/Orari lavoro", Toast.LENGTH_SHORT).show();
     }
 
     /**
