@@ -3,24 +3,25 @@ package it.unisa.orarilavoro;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.MatrixCursor;
+import android.database.MergeCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.util.Log;
-
-import java.lang.reflect.Method;
 
 public class DbManager {
     private DBhelper dbhelper;
 
     public class MyResult {
         private Cursor cursor;
-        private int tot;
-        private int datiTotali;
+        public int ore;
+        public int minuti;
+        public int datiTotali;
 
-        public MyResult(Cursor c, int t, int dT) {
+        public MyResult(Cursor c, int t, int m, int dT) {
             cursor = c;
-            tot = t;
+            ore = t;
+            minuti = m;
             datiTotali = dT;
         }
 
@@ -28,8 +29,8 @@ public class DbManager {
             return cursor;
         }
 
-        public int getTot() {
-            return tot;
+        public String getTotale() {
+            return String.format("%d:%02d", ore, minuti);
         }
 
         public int getDatiTotali() {
@@ -41,15 +42,18 @@ public class DbManager {
         dbhelper = new DBhelper(ctx);
     }
 
-    public void save(int a, int m, int g, int daO, int aO, int tot) {
+    public void save(Orario orario) {
         SQLiteDatabase db = dbhelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put(DatabaseStrings.FIELD_ANNO, a);
-        cv.put(DatabaseStrings.FIELD_MESE, m);
-        cv.put(DatabaseStrings.FIELD_GIORNO, g);
-        cv.put(DatabaseStrings.FIELD_DA_ORA, daO);
-        cv.put(DatabaseStrings.FIELD_A_ORA, aO);
-        cv.put(DatabaseStrings.FIELD_ORE_TOTALI, tot);
+        cv.put(DatabaseStrings.FIELD_ANNO, orario.anno);
+        cv.put(DatabaseStrings.FIELD_MESE, orario.mese);
+        cv.put(DatabaseStrings.FIELD_GIORNO, orario.giorno);
+        cv.put(DatabaseStrings.FIELD_DA_ORA, orario.daOra);
+        cv.put(DatabaseStrings.FIELD_DA_MINUTO, orario.daMinuto);
+        cv.put(DatabaseStrings.FIELD_A_ORA, orario.aOra);
+        cv.put(DatabaseStrings.FIELD_A_MINUTO, orario.aMinuto);
+        cv.put(DatabaseStrings.FIELD_ORE_TOTALI, orario.oreTotali);
+        cv.put(DatabaseStrings.FIELD_MINUTI_TOTALI, orario.minutiTotali);
 
         try {
             long id = db.insert(DatabaseStrings.TBL_NAME, null, cv);
@@ -80,6 +84,31 @@ public class DbManager {
         return false;
     }
 
+    public boolean modificaById(Orario orario) {
+        ContentValues cv = new ContentValues();
+        cv.put(DatabaseStrings.FIELD_ANNO, orario.anno);
+        cv.put(DatabaseStrings.FIELD_MESE, orario.mese);
+        cv.put(DatabaseStrings.FIELD_GIORNO, orario.giorno);
+        cv.put(DatabaseStrings.FIELD_DA_ORA, orario.daOra);
+        cv.put(DatabaseStrings.FIELD_DA_MINUTO, orario.daMinuto);
+        cv.put(DatabaseStrings.FIELD_A_ORA, orario.aOra);
+        cv.put(DatabaseStrings.FIELD_A_MINUTO, orario.aMinuto);
+        cv.put(DatabaseStrings.FIELD_ORE_TOTALI, orario.oreTotali);
+        cv.put(DatabaseStrings.FIELD_MINUTI_TOTALI, orario.minutiTotali);
+
+        Log.i("KIWIBUNNY", this.getClass().getSimpleName() + ": " + orario.id);
+
+        try {
+            SQLiteDatabase db = dbhelper.getReadableDatabase();
+            if(db.update(DatabaseStrings.TBL_NAME, cv, DatabaseStrings.FIELD_ID+"=" + orario.id, null) == 1)
+                return true;
+        } catch(SQLiteException sqle) {
+            sqle.printStackTrace();
+        }
+
+        return false;
+    }
+
     public boolean delete(int id) {
         SQLiteDatabase db = dbhelper.getWritableDatabase();
 
@@ -93,17 +122,6 @@ public class DbManager {
         catch (SQLiteException sqle) {
             return false;
         }
-    }
-
-    public Cursor query() {
-        Cursor crs = null;
-        try {
-            SQLiteDatabase db = dbhelper.getReadableDatabase();
-            crs = db.query(DatabaseStrings.TBL_NAME, null, null, null, null, null, null, null);
-        } catch(SQLiteException sqle) {
-            return null;
-        }
-        return crs;
     }
 
     /**
@@ -126,7 +144,7 @@ public class DbManager {
         return crs;
     }
 
-    public MyResult findAll() {
+    public MyResult findAll(int num) {
         Cursor crs = null;
         String orderBy = DatabaseStrings.FIELD_ANNO + " DESC, " + DatabaseStrings.FIELD_MESE + " DESC, " + DatabaseStrings.FIELD_GIORNO + " DESC";
 
@@ -134,35 +152,48 @@ public class DbManager {
 
         try {
             SQLiteDatabase db = dbhelper.getReadableDatabase();
-            crs = db.query(DatabaseStrings.TBL_NAME, null, null, null, null, null, orderBy, null);
+            crs = db.query(DatabaseStrings.TBL_NAME, null, null, null, null, null, orderBy, String.valueOf(num));
         } catch(SQLiteException sqle) {
             sqle.printStackTrace();
         }
-        int tot = 0, x = 0;
 
-        while(crs.moveToNext()) {
-            tot += crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORE_TOTALI));
+        MatrixCursor matrixCursor = new MatrixCursor(new String[] {DatabaseStrings.FIELD_ID, DatabaseStrings.FIELD_ANNO, DatabaseStrings.FIELD_MESE, DatabaseStrings.FIELD_GIORNO, DatabaseStrings.FIELD_DA_ORA, DatabaseStrings.FIELD_DA_MINUTO,
+        DatabaseStrings.FIELD_A_ORA, DatabaseStrings.FIELD_A_MINUTO, DatabaseStrings.FIELD_ORE_TOTALI, DatabaseStrings.FIELD_MINUTI_TOTALI});
+
+        int ore = 0, minuti = 0, x = 0;
+
+        /*Ordino gli orari in ordine crescente e calcolo il totale delle ore*/
+        crs.moveToLast();
+
+        do {
+            matrixCursor.addRow(new Object[] {
+                (int) crs.getLong(crs.getColumnIndex(DatabaseStrings.FIELD_ID)),
+                crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ANNO)),
+                crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_MESE)),
+                crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_GIORNO)),
+                crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_DA_ORA)),
+                crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_DA_MINUTO)),
+                crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_A_ORA)),
+                crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_A_MINUTO)),
+                crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORE_TOTALI)),
+                crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_MINUTI_TOTALI))
+            });
+
+            ore += crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORE_TOTALI));
+            minuti += crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_MINUTI_TOTALI));
+
+            if(minuti >= 60) {
+                ore++;
+                minuti -= 60;
+            }
+
             x++;
-        }
+        } while (crs.moveToPrevious());
+        /************************************/
 
-        crs.moveToFirst();
-
-        MyResult myResult = new MyResult(crs, tot, x);
+        MyResult myResult = new MyResult(matrixCursor, ore, minuti, x);
 
         return myResult;
-    }
-
-    public Cursor findImpostazioni() {
-        Cursor crs = null;
-
-        try {
-            SQLiteDatabase db = dbhelper.getReadableDatabase();
-            crs = db.query(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, null, null, null, null, null, null, null);
-        } catch(SQLiteException sqle) {
-            sqle.printStackTrace();
-        }
-
-        return crs;
     }
 
     public Cursor findById(int id) {
@@ -184,6 +215,7 @@ public class DbManager {
 
     public MyResult findBetweenTwoDates(int daG, int daM, int daA, int aG, int aM, int aA) {
         Cursor crs = null;
+        String orderBy = DatabaseStrings.FIELD_ANNO + " DESC, " + DatabaseStrings.FIELD_MESE + " DESC, " + DatabaseStrings.FIELD_GIORNO + " DESC";
 
         Log.i("KIWIBUNNY", this.getClass().getSimpleName() + ": chiamato findBetweenTwoDates tra " + daG + "-" + daM + "-" + daA + " e " + aG + "-" + aM + "-" + aA);
 
@@ -194,46 +226,62 @@ public class DbManager {
                             DatabaseStrings.FIELD_MESE+"<=? AND "+ DatabaseStrings.FIELD_MESE+">=? AND " +
                     DatabaseStrings.FIELD_GIORNO+"<=? AND " + DatabaseStrings.FIELD_GIORNO+">=?",
                     new String[]{String.valueOf(aA), String.valueOf(daA), String.valueOf(aM),
-                    String.valueOf(daM), String.valueOf(aG), String.valueOf(daG)}, null, null, null, null);
+                    String.valueOf(daM), String.valueOf(aG), String.valueOf(daG)}, null, null, orderBy, null);
         } catch(SQLiteException sqle) {
             sqle.printStackTrace();
         }
 
-        int tot = 0, x = 0;
+        int ore = 0, minuti = 0, x = 0;
 
-        while(crs.moveToNext()) {
-            tot += crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORE_TOTALI));
+        MatrixCursor matrixCursor = new MatrixCursor(new String[] {DatabaseStrings.FIELD_ID, DatabaseStrings.FIELD_ANNO, DatabaseStrings.FIELD_MESE, DatabaseStrings.FIELD_GIORNO, DatabaseStrings.FIELD_DA_ORA, DatabaseStrings.FIELD_DA_MINUTO,
+                DatabaseStrings.FIELD_A_ORA, DatabaseStrings.FIELD_A_MINUTO, DatabaseStrings.FIELD_ORE_TOTALI, DatabaseStrings.FIELD_MINUTI_TOTALI});
+
+        /*Ordino gli orari in ordine crescente e calcolo il totale delle ore*/
+        crs.moveToLast();
+
+        do {
+            matrixCursor.addRow(new Object[] {
+                    (int) crs.getLong(crs.getColumnIndex(DatabaseStrings.FIELD_ID)),
+                    crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ANNO)),
+                    crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_MESE)),
+                    crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_GIORNO)),
+                    crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_DA_ORA)),
+                    crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_DA_MINUTO)),
+                    crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_A_ORA)),
+                    crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_A_MINUTO)),
+                    crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORE_TOTALI)),
+                    crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_MINUTI_TOTALI))
+            });
+
+            ore += crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORE_TOTALI));
+            minuti += crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_MINUTI_TOTALI));
+
+            if(minuti >= 60) {
+                ore++;
+                minuti -= 60;
+            }
+
             x++;
-        }
+        } while (crs.moveToPrevious());
+        /************************************/
 
-        crs.moveToFirst();
-
-        MyResult myResult = new MyResult(crs, tot, x);
+        MyResult myResult = new MyResult(matrixCursor, ore, minuti, x);
 
         Log.i("KIWIBUNNY", this.getClass().getSimpleName() + ": trovati " + x + " elementi");
 
         return myResult;
     }
 
-    public boolean modificaById(int id, int anno, int mese, int giorno, int daOra, int aOra, int totale) {
-        ContentValues cv = new ContentValues();
-        cv.put(DatabaseStrings.FIELD_ANNO, anno);
-        cv.put(DatabaseStrings.FIELD_MESE, mese);
-        cv.put(DatabaseStrings.FIELD_GIORNO, giorno);
-        cv.put(DatabaseStrings.FIELD_DA_ORA, daOra);
-        cv.put(DatabaseStrings.FIELD_A_ORA, aOra);
-        cv.put(DatabaseStrings.FIELD_ORE_TOTALI, totale);
-
-        Log.i("KIWIBUNNY", this.getClass().getSimpleName() + ": " + id);
+    public Cursor findImpostazioni() {
+        Cursor crs = null;
 
         try {
             SQLiteDatabase db = dbhelper.getReadableDatabase();
-            if(db.update(DatabaseStrings.TBL_NAME, cv, DatabaseStrings.FIELD_ID+"=" + id, null) == 1)
-                return true;
+            crs = db.query(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, null, null, null, null, null, null, null);
         } catch(SQLiteException sqle) {
             sqle.printStackTrace();
         }
 
-        return false;
+        return crs;
     }
 }

@@ -1,7 +1,9 @@
 package it.unisa.orarilavoro;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.app.Fragment;
+import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,9 +15,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.util.Calendar;
@@ -26,7 +30,7 @@ public class InserimentoDati extends Fragment {
         int MODIFICA_DATI = 1;
         int RIMUOVI_FRAMMENTO = 2;
 
-        void onInvioDati(int codice, int dati[]);
+        void onInvioDati(int codice, Orario dati);
     }
 
     /**
@@ -37,19 +41,13 @@ public class InserimentoDati extends Fragment {
         public void onReceive(Context context, Intent intent) {
             Log.d("kiwi", "BroadcastReceiver: ricevuti dei dati");
 
-            int anno, mese, giorno, daOra, aOra, totale, _id = 0;
+            Orario orario;
             boolean temp;
 
-            anno = intent.getIntExtra("anno", 0);
-            mese = intent.getIntExtra("mese", 0);
-            giorno = intent.getIntExtra("giorno", 0);
-            daOra = intent.getIntExtra("daOra", 0);
-            aOra = intent.getIntExtra("aOra", 0);
-            totale = intent.getIntExtra("totale", 0);
-            _id = intent.getIntExtra("_id", -1);
+            orario = (Orario) intent.getSerializableExtra("Orario");
             temp = intent.getBooleanExtra("temp", false);
 
-            setEditText(anno, mese, giorno, daOra, aOra, totale, _id);
+            setEditText(orario);
 
             btnIndietro.setVisibility(View.VISIBLE);
             if(!temp) {
@@ -57,8 +55,8 @@ public class InserimentoDati extends Fragment {
                     @Override
                     public void onClick(View view) {
                         Calendar calendar = Calendar.getInstance();
-                        setEditText(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH), 7,
-                                calendar.get(Calendar.HOUR_OF_DAY) + 2, calendar.getInstance().get(Calendar.HOUR_OF_DAY) + 2 - 7, -1);
+                        setEditText(new Orario(-1, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH), 7, 0,
+                                calendar.get(Calendar.HOUR_OF_DAY) + 2, 0, calendar.getInstance().get(Calendar.HOUR_OF_DAY) + 2 - 7, 0));
 
                         btnIndietro.setVisibility(View.INVISIBLE);
                     }
@@ -75,8 +73,12 @@ public class InserimentoDati extends Fragment {
     };
 
     private TextView tvId;
-    private EditText etAnno, etMese, etGiorno, etDaOra, etAOra, etTotale;
+    private EditText etData, etDaOra, etAOra, etTotale;
     private ImageButton btnIndietro;
+
+    //Widget per l'inserimento della data e degli orari
+    private DatePickerDialog picker;
+    private TimePickerDialog pickerDaOra, pickerAOra;
 
     private InvioDatiListener listener = null;
 
@@ -92,69 +94,56 @@ public class InserimentoDati extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         tvId = getActivity().findViewById(R.id.tvId);
-        etAnno = getActivity().findViewById(R.id.etAnno);
-        etMese = getActivity().findViewById(R.id.etMese);
-        etGiorno = getActivity().findViewById(R.id.etGiorno);
+        etData = getActivity().findViewById(R.id.etData);
         etDaOra = getActivity().findViewById(R.id.etDaOra);
         etAOra = getActivity().findViewById(R.id.etAOra);
         etTotale = getActivity().findViewById(R.id.etTotale);
         btnIndietro = getActivity().findViewById(R.id.btnIndietro);
 
-        /*Setto il bottone salva*/
-        getActivity().findViewById(R.id.btnConferma).setOnClickListener(new View.OnClickListener() {
+        /*Setto il calendario per selezionare la data*/
+        etData.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                int anno, mese, giorno, daOra, aOra, totale, _id;
+            public void onClick(View v) {
+                final Calendar cldr = Calendar.getInstance();
+                int day = cldr.get(Calendar.DAY_OF_MONTH);
+                int month = cldr.get(Calendar.MONTH);
+                int year = cldr.get(Calendar.YEAR);
 
-                try {
-                    anno = Integer.parseInt(etAnno.getText().toString());
-                    mese = Integer.parseInt(etMese.getText().toString());
-                    giorno = Integer.parseInt(etGiorno.getText().toString());
-                    daOra = Integer.parseInt(etDaOra.getText().toString());
-                    aOra = Integer.parseInt(etAOra.getText().toString());
-                    totale = Integer.parseInt(etTotale.getText().toString());
-                    _id = Integer.parseInt(tvId.getText().toString());
-                } catch (NumberFormatException e) {
-                    Toast.makeText(getActivity().getApplicationContext(), "Inserire dati numerici", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                picker = new DatePickerDialog(InserimentoDati.this.getContext(), new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        etData.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                    }
+                }, year, month, day);
+                picker.show();
+            }
+        });
 
-                if(anno > 2100 || anno < 2000) {
-                    Toast.makeText(getActivity().getApplicationContext(), "Inserire un anno valido", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+        /*Setto l'orologio per la data di inizio del lavoro*/
+        etDaOra.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pickerDaOra = new TimePickerDialog(InserimentoDati.this.getContext(), new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                        etDaOra.setText(String.format("%02d:%02d", i, i1));
+                    }
+                }, 7, 0, true);
+                pickerDaOra.show();
+            }
+        });
 
-                if(mese > 12 || mese < 1) {
-                    Toast.makeText(getActivity().getApplicationContext(), "Inserire un mese valido", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if(giorno > 31 || giorno < 1) {
-                    Toast.makeText(getActivity().getApplicationContext(), "Inserire un giorno valido", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if(daOra > 24 || daOra < 0 || aOra > 24 || aOra < 0 || daOra > aOra) {
-                    Toast.makeText(getActivity().getApplicationContext(), "Inserire un orario valido", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if(totale > 24 || totale < 0) {
-                    Toast.makeText(getActivity().getApplicationContext(), "Inserire un totale valido", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                Log.i("KIWIBUNNY", this.getClass().getSimpleName() + ": elementi da salvare: " + anno + "/" + mese + "/" + giorno + " " + daOra + " - " + aOra + " tot. " + totale);
-
-                int dati[] = {anno, mese, giorno, daOra, aOra, totale, _id};
-
-                /*****************
-                Verifico se devo inserire o modificare controllando se l'id è fittizio (-1) oppure è reale
-                *****************/
-                if(_id == -1)
-                    listener.onInvioDati(InvioDatiListener.SALVA_DATI, dati);
-                else
-                    listener.onInvioDati(InvioDatiListener.MODIFICA_DATI, dati);
+        /*Setto l'orologio per la data di fine del lavoro*/
+        etAOra.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pickerAOra = new TimePickerDialog(InserimentoDati.this.getContext(), new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                        etAOra.setText(String.format("%02d:%02d", i, i1));
+                    }
+                }, 19, 0, true);
+                pickerAOra.show();
             }
         });
 
@@ -172,13 +161,12 @@ public class InserimentoDati extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                int da = 0, a = 0;
+                String da, a;
 
                 try {
-                    da = Integer.parseInt(etDaOra.getText().toString());
-                    a = Integer.parseInt(etAOra.getText().toString());
-
-                    etTotale.setText("" + (a - da - 1));
+                    da = etDaOra.getText().toString();
+                    a = etAOra.getText().toString();
+                    etTotale.setText(Orario.calcoloOreTotali(da, a));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -198,32 +186,60 @@ public class InserimentoDati extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                int da = 0, a = 0;
+                String da, a;
 
                 try {
-                    da = Integer.parseInt(etDaOra.getText().toString());
-                    a = Integer.parseInt(etAOra.getText().toString());
-
-                    etTotale.setText("" + (a - da));
+                    da = etDaOra.getText().toString();
+                    a = etAOra.getText().toString();
+                    etTotale.setText(Orario.calcoloOreTotali(da, a));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
 
+        /*Fine settaggio automatico delle ore lavorative*/
+
+        /*Setto il bottone salva*/
+        getActivity().findViewById(R.id.btnConferma).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Orario orario = new Orario();
+
+                try {
+                    orario.setData(etData.getText().toString());
+                    orario.setDaOra(etDaOra.getText().toString());
+                    orario.setAOra(etAOra.getText().toString());
+                    orario.setTotale(etTotale.getText().toString());
+                    orario.setId(Integer.parseInt(tvId.getText().toString()));
+                } catch (NumberFormatException e) {
+                    Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                //Log.i("KIWIBUNNY", this.getClass().getSimpleName() + ": elementi da salvare: " + anno + "/" + mese + "/" + giorno + " " + daOra + " - " + aOra + " tot. " + totale);
+
+                /*Verifico se devo inserire o modificare controllando se l'id è fittizio (-1) oppure è reale*/
+                if(orario.id == -1)
+                    listener.onInvioDati(InvioDatiListener.SALVA_DATI, orario);
+                else
+                    listener.onInvioDati(InvioDatiListener.MODIFICA_DATI, orario);
+                /********************************************************************************************/
+            }
+        });
+        /*Fine settaggio bottone salva*/
+
         Calendar calendar = Calendar.getInstance();
-        setEditText(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH), 7,
-                calendar.get(Calendar.HOUR_OF_DAY) + 2, calendar.getInstance().get(Calendar.HOUR_OF_DAY) + 2 - 7, -1);
+        setEditText(new Orario(-1, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH), 7, 0,
+                calendar.get(Calendar.HOUR_OF_DAY) + 2, 0, calendar.getInstance().get(Calendar.HOUR_OF_DAY) + 2 - 7, 0));
     }
 
-    private void setEditText(int anno, int mese, int giorno, int daOra, int aOra, int totale, int _id) {
-        etAnno.setText(anno + "");
-        etMese.setText(mese + "");
-        etGiorno.setText(giorno + "");
-        etDaOra.setText(daOra + "");
-        etAOra.setText(aOra + "");
-        etTotale.setText(totale + "");
-        tvId.setText(_id + "");
+    private void setEditText(Orario orario) {
+        etData.setText(orario.getData());
+        etDaOra.setText(orario.getDaOra());
+        etAOra.setText(orario.getAOra());
+        etTotale.setText(orario.getTotale());
+        tvId.setText(orario.id + "");
     }
 
     @Override

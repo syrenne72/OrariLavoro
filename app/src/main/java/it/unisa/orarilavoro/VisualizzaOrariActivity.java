@@ -39,6 +39,7 @@ import java.io.FileOutputStream;
 import java.util.Calendar;
 
 public class VisualizzaOrariActivity extends AppCompatActivity implements InserimentoDati.InvioDatiListener {
+    private LinearLayout llRicerca;
     private ListView lvOrariTotali;
     private FrameLayout flInserimento;
     private TextView tvTotaleOre;
@@ -60,6 +61,7 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
         /*Richiedo i permessi di scrittura*/
         ActivityCompat.requestPermissions(VisualizzaOrariActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
 
+        llRicerca = findViewById(R.id.llRicerca);
         lvOrariTotali = findViewById(R.id.lvOrariTotali);
         flInserimento = findViewById(R.id.flInserimento);
         tvTotaleOre = findViewById(R.id.tvTotaleOre);
@@ -82,13 +84,54 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
         /***********/
 
         //Prendo tutti gli orari memorizzati
-        myResult = dbManager.findAll();
+        myResult = dbManager.findAll(30);
         cursorOrari = myResult.getCursor();
 
         refreshListView();
 
         /*Mostro le ore totali di tutti i risultati disponibili*/
-        tvTotaleOre.setText("" + myResult.getTot());
+        tvTotaleOre.setText(myResult.getTotale());
+    }
+
+    /**
+     * Si occupa di inizializzare gli EditText per la ricerca dei dati
+     */
+    private void inizializzaRicerca() {
+        etDaGiorno.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar cldr = Calendar.getInstance();
+                int day = cldr.get(Calendar.DAY_OF_MONTH);
+                int month = cldr.get(Calendar.MONTH);
+                int year = cldr.get(Calendar.YEAR);
+
+                picker = new DatePickerDialog(VisualizzaOrariActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        etDaGiorno.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                    }
+                }, year, month, day);
+                picker.show();
+            }
+        });
+
+        etAGiorno.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar cldr = Calendar.getInstance();
+                int day = cldr.get(Calendar.DAY_OF_MONTH);
+                int month = cldr.get(Calendar.MONTH);
+                int year = cldr.get(Calendar.YEAR);
+
+                picker = new DatePickerDialog(VisualizzaOrariActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        etAGiorno.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                    }
+                }, year, month, day);
+                picker.show();
+            }
+        });
     }
 
     /**
@@ -246,7 +289,7 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
         DbManager.MyResult myResult = dbManager.findBetweenTwoDates(daG, daM, daA, aG, aM, aA);
         cursorOrari = myResult.getCursor();
 
-        tvTotaleOre.setText(myResult.getTot() + "");
+        tvTotaleOre.setText(myResult.getTotale());
         refreshListView();
     }
 
@@ -265,7 +308,7 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
             public void bindView(View view, Context context, Cursor crs) {
                 final TextView tvData, tvDaOra, tvAOra, tvTotale, tvId;
                 ImageButton btnModifica, btnCancella;
-                int anno, mese, giorno, daOra, aOra, totale, id = 0;
+                int anno, mese, giorno, daOra, daMinuto, aOra, aMinuto, oreTotali, minutiTotali, id;
 
                 tvData = view.findViewById(R.id.tvData);
                 tvDaOra = view.findViewById(R.id.tvDaOra);
@@ -279,17 +322,18 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
                 mese = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_MESE));
                 giorno = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_GIORNO));
                 daOra = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_DA_ORA));
+                daMinuto = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_DA_MINUTO));
                 aOra = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_A_ORA));
-                totale = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORE_TOTALI));
+                aMinuto = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_A_MINUTO));
+                oreTotali = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORE_TOTALI));
+                minutiTotali = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_MINUTI_TOTALI));
                 id = (int) crs.getLong(crs.getColumnIndex(DatabaseStrings.FIELD_ID));
 
                 /*Formattare una data*/
                 tvData.setText(String.format("%02d/%02d/%04d", giorno, mese, anno));
-                /*****/
-
-                tvDaOra.setText(daOra + ":00");
-                tvAOra.setText(aOra + ":00");
-                tvTotale.setText(totale + "");
+                tvDaOra.setText(String.format("%02d:%02d", daOra, daMinuto));
+                tvAOra.setText(String.format("%02d:%02d", aOra, aMinuto));
+                tvTotale.setText(String.format("%02d:%02d", oreTotali, minutiTotali));
                 tvId.setText(id + "");
 
                 btnModifica.setTag(id);
@@ -307,6 +351,8 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
                         ft.show(inserimentoDatiFragment);
                         ft.commit();
 
+                        llRicerca.setVisibility(View.INVISIBLE);
+
                         Intent intent = new Intent("STRING_ID_FOR_BRODCAST");
                         int id = (int) view.getTag();
 
@@ -315,24 +361,18 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
                         Cursor cursor = dbManager.findById((int) id);
                         cursor.moveToNext();
 
-                        int anno, mese, giorno, daOra, aOra, totale, _id = 0;
+                        Orario orario = new Orario();
 
-                        anno = cursor.getInt(cursor.getColumnIndex(DatabaseStrings.FIELD_ANNO));
-                        mese = cursor.getInt(cursor.getColumnIndex(DatabaseStrings.FIELD_MESE));
-                        giorno = cursor.getInt(cursor.getColumnIndex(DatabaseStrings.FIELD_GIORNO));
-                        daOra = cursor.getInt(cursor.getColumnIndex(DatabaseStrings.FIELD_DA_ORA));
-                        aOra = cursor.getInt(cursor.getColumnIndex(DatabaseStrings.FIELD_A_ORA));
-                        totale = cursor.getInt(cursor.getColumnIndex(DatabaseStrings.FIELD_ORE_TOTALI));
-                        _id = (int) cursor.getLong(cursor.getColumnIndex(DatabaseStrings.FIELD_ID));
+                        orario.id = (int) cursor.getLong(cursor.getColumnIndex(DatabaseStrings.FIELD_ID));
+                        orario.anno = cursor.getInt(cursor.getColumnIndex(DatabaseStrings.FIELD_ANNO));
+                        orario.mese = cursor.getInt(cursor.getColumnIndex(DatabaseStrings.FIELD_MESE));
+                        orario.giorno = cursor.getInt(cursor.getColumnIndex(DatabaseStrings.FIELD_GIORNO));
+                        orario.daOra = cursor.getInt(cursor.getColumnIndex(DatabaseStrings.FIELD_DA_ORA));
+                        orario.aOra = cursor.getInt(cursor.getColumnIndex(DatabaseStrings.FIELD_A_ORA));
+                        orario.oreTotali = cursor.getInt(cursor.getColumnIndex(DatabaseStrings.FIELD_ORE_TOTALI));
 
-                        intent.putExtra("anno",anno);
-                        intent.putExtra("mese", mese);
-                        intent.putExtra("giorno", giorno);
-                        intent.putExtra("daOra", daOra);
-                        intent.putExtra("aOra", aOra);
-                        intent.putExtra("totale", totale);
-                        intent.putExtra("_id", _id);
                         intent.putExtra("temp", true);
+                        intent.putExtra("Orario", orario);
 
                         sendBroadcast(intent);
                     }
@@ -369,64 +409,36 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
         lvOrariTotali.setAdapter(adapter);
     }
 
-    /**
-     * Si occupa di inizializzare gli EditText per la ricerca dei dati
-     */
-    private void inizializzaRicerca() {
-        etDaGiorno.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Calendar cldr = Calendar.getInstance();
-                int day = cldr.get(Calendar.DAY_OF_MONTH);
-                int month = cldr.get(Calendar.MONTH);
-                int year = cldr.get(Calendar.YEAR);
-
-                picker = new DatePickerDialog(VisualizzaOrariActivity.this, new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                etDaGiorno.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
-                            }
-                        }, year, month, day);
-                picker.show();
-            }
-        });
-
-        etAGiorno.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Calendar cldr = Calendar.getInstance();
-                int day = cldr.get(Calendar.DAY_OF_MONTH);
-                int month = cldr.get(Calendar.MONTH);
-                int year = cldr.get(Calendar.YEAR);
-
-                picker = new DatePickerDialog(VisualizzaOrariActivity.this, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        etAGiorno.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
-                    }
-                }, year, month, day);
-                picker.show();
-            }
-        });
-    }
-
     private void reload() {
         finish();
         startActivity(getIntent());
     }
 
     @Override
-    public void onInvioDati(int codice, int[] dati) {
+    public void onInvioDati(int codice, Orario dati) {
         if(codice == MODIFICA_DATI) {
-            int anno = dati[0], mese = dati[1], giorno = dati[2], daOra = dati[3], aOra = dati[4], totale = dati[5], _id = dati[6];
-
-            dbManager.modificaById(_id, anno, mese, giorno, daOra, aOra, totale);
+            dbManager.modificaById(dati);
 
             reload();
         } else if(codice == RIMUOVI_FRAMMENTO) {
             FragmentTransaction ft = fm.beginTransaction();
             ft.hide(inserimentoDatiFragment);
             ft.commit();
+        }
+
+        llRicerca.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(llRicerca.getVisibility() == View.VISIBLE)
+            super.onBackPressed();
+        else {
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.hide(inserimentoDatiFragment);
+            ft.commit();
+
+            llRicerca.setVisibility(View.VISIBLE);
         }
     }
 }

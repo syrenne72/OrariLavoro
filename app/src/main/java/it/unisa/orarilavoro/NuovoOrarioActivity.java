@@ -66,7 +66,7 @@ public class NuovoOrarioActivity extends AppCompatActivity implements Inseriment
             public void bindView(View view, Context context, Cursor crs) {
                 final TextView tvData, tvDaOra, tvAOra, tvTotale, tvId;
                 ImageButton btnModifica, btnCancella;
-                int anno, mese, giorno, daOra, aOra, totale, id = 0;
+                int anno, mese, giorno, daOra, daMinuto, aOra, aMinuto, oreTotali, minutiTotali, id = 0;
 
                 tvData = view.findViewById(R.id.tvData);
                 tvDaOra = view.findViewById(R.id.tvDaOra);
@@ -80,15 +80,18 @@ public class NuovoOrarioActivity extends AppCompatActivity implements Inseriment
                 mese = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_MESE));
                 giorno = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_GIORNO));
                 daOra = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_DA_ORA));
+                daMinuto = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_DA_MINUTO));
                 aOra = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_A_ORA));
-                totale = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORE_TOTALI));
+                aMinuto = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_A_MINUTO));
+                oreTotali = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORE_TOTALI));
+                minutiTotali = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_MINUTI_TOTALI));
                 id = (int) crs.getLong(crs.getColumnIndex(DatabaseStrings.FIELD_ID));
 
                 /*Formattare una data*/
                 tvData.setText(String.format("%02d/%02d/%04d", giorno, mese, anno));
-                tvDaOra.setText(daOra + ":00");
-                tvAOra.setText(aOra + ":00");
-                tvTotale.setText(totale + "");
+                tvDaOra.setText(String.format("%02d:%02d", daOra, daMinuto));
+                tvAOra.setText(String.format("%02d:%02d", aOra, aMinuto));
+                tvTotale.setText(String.format("%02d:%02d", oreTotali, minutiTotali));
                 tvId.setText(id + "");
 
                 btnModifica.setTag(id);
@@ -111,24 +114,20 @@ public class NuovoOrarioActivity extends AppCompatActivity implements Inseriment
                         Cursor cursor = dbManager.findById((int) id);
                         cursor.moveToNext();
 
-                        int anno, mese, giorno, daOra, aOra, totale, _id = 0;
+                        Orario orario = new Orario();
 
-                        anno = cursor.getInt(cursor.getColumnIndex(DatabaseStrings.FIELD_ANNO));
-                        mese = cursor.getInt(cursor.getColumnIndex(DatabaseStrings.FIELD_MESE));
-                        giorno = cursor.getInt(cursor.getColumnIndex(DatabaseStrings.FIELD_GIORNO));
-                        daOra = cursor.getInt(cursor.getColumnIndex(DatabaseStrings.FIELD_DA_ORA));
-                        aOra = cursor.getInt(cursor.getColumnIndex(DatabaseStrings.FIELD_A_ORA));
-                        totale = cursor.getInt(cursor.getColumnIndex(DatabaseStrings.FIELD_ORE_TOTALI));
-                        _id = (int) cursor.getLong(cursor.getColumnIndex(DatabaseStrings.FIELD_ID));
+                        orario.id = (int) cursor.getLong(cursor.getColumnIndex(DatabaseStrings.FIELD_ID));
+                        orario.anno = cursor.getInt(cursor.getColumnIndex(DatabaseStrings.FIELD_ANNO));
+                        orario.mese = cursor.getInt(cursor.getColumnIndex(DatabaseStrings.FIELD_MESE));
+                        orario.giorno = cursor.getInt(cursor.getColumnIndex(DatabaseStrings.FIELD_GIORNO));
+                        orario.daOra = cursor.getInt(cursor.getColumnIndex(DatabaseStrings.FIELD_DA_ORA));
+                        orario.daMinuto = cursor.getInt(cursor.getColumnIndex(DatabaseStrings.FIELD_DA_MINUTO));
+                        orario.aOra = cursor.getInt(cursor.getColumnIndex(DatabaseStrings.FIELD_A_ORA));
+                        orario.aMinuto = cursor.getInt(cursor.getColumnIndex(DatabaseStrings.FIELD_A_MINUTO));
+                        orario.oreTotali = cursor.getInt(cursor.getColumnIndex(DatabaseStrings.FIELD_ORE_TOTALI));
+                        orario.minutiTotali = cursor.getInt(cursor.getColumnIndex(DatabaseStrings.FIELD_MINUTI_TOTALI));
 
-                        intent.putExtra("anno",anno);
-                        intent.putExtra("mese", mese);
-                        intent.putExtra("giorno", giorno);
-                        intent.putExtra("daOra", daOra);
-                        intent.putExtra("aOra", aOra);
-                        intent.putExtra("totale", totale);
-                        intent.putExtra("_id", id);
-
+                        intent.putExtra("Orario", orario);
                         sendBroadcast(intent);
                     }
                 });
@@ -170,19 +169,15 @@ public class NuovoOrarioActivity extends AppCompatActivity implements Inseriment
     }
 
     @Override
-    public void onInvioDati(int codice, int[] dati) {
+    public void onInvioDati(int codice, Orario dati) {
         if(codice == SALVA_DATI) {
-            int anno = dati[0], mese = dati[1], giorno = dati[2], daOra = dati[3], aOra = dati[4], totale = dati[5];
-
             Log.i("KIWIBUNNY", this.getClass().getSimpleName() + " Salvo i dati confermati");
-            dbManager.save(anno, mese, giorno, daOra, aOra, totale);
+            dbManager.save(dati);
 
             reload();
         } else if(codice == MODIFICA_DATI) {
-            int anno = dati[0], mese = dati[1], giorno = dati[2], daOra = dati[3], aOra = dati[4], totale = dati[5], _id = dati[6];
-
             Log.i("KIWIBUNNY", this.getClass().getSimpleName() + " Modifico i dati confermati");
-            dbManager.modificaById(_id, anno, mese, giorno, daOra, aOra, totale);
+            dbManager.modificaById(dati);
 
             reload();
         }

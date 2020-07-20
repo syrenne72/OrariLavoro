@@ -11,15 +11,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="@dimen/padding_form_child"
         android:background="@color/vlGrigio">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/padding_form_child"
-            android:textSize="20dp"
-            android:fontFamily="@font/roboto_black"
+            android:textSize="@dimen/text_large"
+            android:fontFamily="@font/roboto_thin"
             android:textColor="@color/dGrigio"
             android:text="Inserisci i tuoi dati:"/>
 
@@ -39,49 +38,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/padding_form_child"
-                android:text="Giorno:"/>
+                android:fontFamily="@font/roboto_thin"
+                android:text="Data:"
+                android:textSize="@dimen/text_medium_max"
+                android:layout_gravity="center"/>
 
             <EditText
-                android:id="@+id/etGiorno"
-                android:layout_width="@dimen/edittext_w_min"
+                android:id="@+id/etData"
+                android:layout_width="@dimen/data"
                 android:layout_height="@dimen/edittext_h"
-                android:inputType="number"
-                android:hint="01"
-                android:text=""
-                android:textAlignment="textEnd"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/padding_form_child"
-                android:text="Mese:"/>
-
-            <EditText
-                android:id="@+id/etMese"
-                android:layout_width="@dimen/edittext_w_min"
-                android:layout_height="@dimen/edittext_h"
-                android:inputType="number"
-                android:hint="01"
-                android:text=""
-                android:textAlignment="textEnd"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/padding_form_child"
-                android:fontFamily="@font/roboto_regular"
-                android:text="Anno:"/>
-
-            <EditText
-                android:id="@+id/etAnno"
-                android:layout_width="@dimen/edittext_w"
-                android:layout_height="@dimen/edittext_h"
-                android:hint="2020"
-                android:inputType="number"
-                android:text=""
-                android:textAlignment="textEnd"/>
+                android:textAlignment="textEnd"
+                android:focusable="false"/>
         </LinearLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -91,75 +59,87 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/padding_form_child"
-                android:text="Dalle ore:"/>
+                android:fontFamily="@font/roboto_thin"
+                android:text="Dalle ore:"
+                android:textSize="@dimen/text_medium_max"
+                android:layout_gravity="center"/>
 
             <EditText
                 android:id="@+id/etDaOra"
-                android:layout_width="@dimen/edittext_w_min"
+                android:layout_width="@dimen/ora"
                 android:layout_height="@dimen/edittext_h"
-                android:hint="7"
-                android:inputType="number"
-                android:text=""
-                android:textAlignment="textEnd"/>
+                android:textAlignment="textEnd"
+                android:focusable="false"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/padding_form_child"
-                android:text="Alle ore:"/>
+                android:fontFamily="@font/roboto_thin"
+                android:text="Alle ore:"
+                android:textSize="@dimen/text_medium_max"
+                android:layout_gravity="center"/>
 
             <EditText
                 android:id="@+id/etAOra"
-                android:layout_width="@dimen/edittext_w_min"
+                android:layout_width="@dimen/ora"
                 android:layout_height="@dimen/edittext_h"
-                android:hint="18"
-                android:inputType="number"
-                android:text=""
-                android:textAlignment="textEnd"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/padding_form_child"
-                android:text="Totale ore:"/>
-
-            <EditText
-                android:id="@+id/etTotale"
-                android:layout_width="@dimen/edittext_w_min"
-                android:layout_height="@dimen/edittext_h"
-                android:inputType="number"
-                android:hint="1"
-                android:text=""
-                android:textAlignment="textEnd"/>
+                android:textAlignment="textEnd"
+                android:focusable="false"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="right">
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/padding_form_child"
+                    android:fontFamily="@font/roboto_thin"
+                    android:text="Ore totali:"
+                    android:textSize="@dimen/text_medium_max"
+                    android:layout_gravity="center"/>
 
-            <ImageButton
-                android:visibility="invisible"
-                android:id="@+id/btnIndietro"
-                android:layout_width="@dimen/button_small"
-                android:layout_height="@dimen/button_small"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="10dp"
-                android:padding="10dp"
-                android:background="@drawable/stile_bottone_completo"
-                android:src="@drawable/back"
-                android:textColor="@color/dRosso"/>
+                <EditText
+                    android:id="@+id/etTotale"
+                    android:layout_width="@dimen/ora"
+                    android:layout_height="@dimen/edittext_h"
+                    android:inputType="number"
+                    android:hint="1:00"
+                    android:text=""
+                    android:textAlignment="textEnd"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="right">
 
-            <ImageButton
-                android:id="@+id/btnConferma"
-                android:layout_width="@dimen/button_small"
-                android:layout_height="@dimen/button_small"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="10dp"
-                android:padding="10dp"
-                android:background="@drawable/stile_bottone_completo_verde"
-                android:src="@drawable/confirm"
-                android:textColor="@color/dVerde"/>
+                <ImageButton
+                    android:visibility="invisible"
+                    android:id="@+id/btnIndietro"
+                    android:layout_width="@dimen/button_small"
+                    android:layout_height="@dimen/button_small"
+                    android:layout_marginRight="10dp"
+                    android:padding="10dp"
+                    android:background="@drawable/stile_bottone_completo"
+                    android:src="@drawable/back"
+                    android:textColor="@color/dRosso"/>
+
+                <ImageButton
+                    android:id="@+id/btnConferma"
+                    android:layout_width="@dimen/button_small"
+                    android:layout_height="@dimen/button_small"
+                    android:layout_marginRight="10dp"
+                    android:padding="10dp"
+                    android:background="@drawable/stile_bottone_completo_verde"
+                    android:src="@drawable/confirm"
+                    android:textColor="@color/dVerde"/>
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

@@ -40,7 +40,7 @@ public class ModificaOrarioActivity extends AppCompatActivity {
         etTotale.setText(i.getIntExtra("totale", 0) + "");*/
     }
 
-    public void confermaDatiModificati(View view) {
+    /*public void confermaDatiModificati(View view) {
         int anno = 0, mese, giorno, daOra, aOra, totale = 0, _id;
 
         try {
@@ -87,7 +87,7 @@ public class ModificaOrarioActivity extends AppCompatActivity {
         dbManager.modificaById(_id, anno, mese, giorno, daOra, aOra, totale);
 
         super.onBackPressed();
-    }
+    }*/
 
     public void indietro(View view) {
         super.onBackPressed();

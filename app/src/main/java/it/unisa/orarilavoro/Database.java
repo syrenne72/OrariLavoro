@@ -9,7 +9,7 @@ class DBhelper extends SQLiteOpenHelper {
     public static final String DBNAME = "ORARIDILAVORO";
 
     public DBhelper(Context context) {
-        super(context, DBNAME, null, 7);
+        super(context, DBNAME, null, 8);
     }
 
     /**
@@ -24,8 +24,11 @@ class DBhelper extends SQLiteOpenHelper {
                 DatabaseStrings.FIELD_MESE+ " INT," +
                 DatabaseStrings.FIELD_GIORNO + " INT," +
                 DatabaseStrings.FIELD_DA_ORA + " INT," +
+                DatabaseStrings.FIELD_DA_MINUTO + " INT," +
                 DatabaseStrings.FIELD_A_ORA + " INT," +
-                DatabaseStrings.FIELD_ORE_TOTALI + " INT)";
+                DatabaseStrings.FIELD_A_MINUTO + " INT," +
+                DatabaseStrings.FIELD_ORE_TOTALI + " INT," +
+                DatabaseStrings.FIELD_MINUTI_TOTALI + " INT)";
 
         db.execSQL(q);
 
