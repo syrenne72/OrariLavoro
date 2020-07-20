@@ -1,6 +1,5 @@
 package it.unisa.orarilavoro;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,9 +18,9 @@ public class ModificaOrarioActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.modifica_orario);
+        setContentView(R.layout.form_orario);
 
-        tvId = findViewById(R.id.tvId);
+        /*tvId = findViewById(R.id.tvId);
         etAnno = findViewById(R.id.etAnno);
         etMese = findViewById(R.id.etMese);
         etGiorno = findViewById(R.id.etGiorno);
@@ -38,7 +37,7 @@ public class ModificaOrarioActivity extends AppCompatActivity {
         etGiorno.setText(i.getIntExtra("giorno", 0) + "");
         etDaOra.setText(i.getIntExtra("daOra", 0) + "");
         etAOra.setText(i.getIntExtra("aOra", 0) + "");
-        etTotale.setText(i.getIntExtra("totale", 0) + "");
+        etTotale.setText(i.getIntExtra("totale", 0) + "");*/
     }
 
     public void confermaDatiModificati(View view) {

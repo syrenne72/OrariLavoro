@@ -12,4 +12,6 @@
     <color name="vlGrigio">#07718792</color>
     <color name="mlGrigio">#14718792</color>
     <color name="dGrigio">#1c313a</color>
+    <color name="dVerde">#4CAF50</color>
+    <color name="mVerde">#8BC34A</color>
 </resources>

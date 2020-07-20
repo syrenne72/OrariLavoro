@@ -20,7 +20,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AggiungiUnOrarioActivity"/>
+        <activity android:name=".NuovoOrarioActivity"/>
         <activity android:name=".VisualizzaOrariActivity"/>
         <activity android:name=".ModificaOrarioActivity"/>
         <activity android:name=".Impostazioni"/>

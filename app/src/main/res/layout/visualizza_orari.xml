@@ -5,11 +5,17 @@
     android:layout_height="match_parent"
     tools:context=".VisualizzaOrariActivity">
 
+    <FrameLayout
+        android:id="@+id/flInserimento"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <LinearLayout
         android:id="@+id/llRicerca"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_below="@id/flInserimento"
         android:background="@color/mlGrigio">
 
         <TextView

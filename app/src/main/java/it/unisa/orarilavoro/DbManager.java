@@ -185,7 +185,7 @@ public class DbManager {
     public MyResult findBetweenTwoDates(int daG, int daM, int daA, int aG, int aM, int aA) {
         Cursor crs = null;
 
-        Log.i("KIWIBUNNY", this.getClass().getSimpleName() + ": chiamato findBetweenTwoDates");
+        Log.i("KIWIBUNNY", this.getClass().getSimpleName() + ": chiamato findBetweenTwoDates tra " + daG + "-" + daM + "-" + daA + " e " + aG + "-" + aM + "-" + aA);
 
         try {
             SQLiteDatabase db = dbhelper.getReadableDatabase();
@@ -195,14 +195,6 @@ public class DbManager {
                     DatabaseStrings.FIELD_GIORNO+"<=? AND " + DatabaseStrings.FIELD_GIORNO+">=?",
                     new String[]{String.valueOf(aA), String.valueOf(daA), String.valueOf(aM),
                     String.valueOf(daM), String.valueOf(aG), String.valueOf(daG)}, null, null, null, null);
-
-            /*String sqlQry = SQLiteQueryBuilder.buildQueryString(false, DatabaseStrings.TBL_NAME, null,
-                    DatabaseStrings.FIELD_ANNO+"<=" + daA + " AND " + DatabaseStrings.FIELD_ANNO +">=" +aA + " AND " +
-                            DatabaseStrings.FIELD_MESE+"<=" + aM + " AND "+ DatabaseStrings.FIELD_MESE+">=" + daM + " AND " +
-                            DatabaseStrings.FIELD_GIORNO+"<=" + aG + " AND " + DatabaseStrings.FIELD_GIORNO+">=" + aG,
-                    null, null, null, null);
-            Log.i("KIWIBUNNY", this.getClass().getSimpleName() + ": " + sqlQry);*/
-
         } catch(SQLiteException sqle) {
             sqle.printStackTrace();
         }
@@ -217,6 +209,8 @@ public class DbManager {
         crs.moveToFirst();
 
         MyResult myResult = new MyResult(crs, tot, x);
+
+        Log.i("KIWIBUNNY", this.getClass().getSimpleName() + ": trovati " + x + " elementi");
 
         return myResult;
     }

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ModificaOrarioActivity">
+    tools:context=".InserimentoDati">
 
     <LinearLayout
         android:id="@+id/llFormOrario"
@@ -39,15 +39,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/padding_form_child"
-                android:fontFamily="@font/roboto_regular"
-                android:text="Anno:"/>
+                android:text="Giorno:"/>
 
             <EditText
-                android:id="@+id/etAnno"
-                android:layout_width="@dimen/edittext_w"
+                android:id="@+id/etGiorno"
+                android:layout_width="@dimen/edittext_w_min"
                 android:layout_height="@dimen/edittext_h"
-                android:hint="2020"
                 android:inputType="number"
+                android:hint="01"
                 android:text=""
                 android:textAlignment="textEnd"/>
 
@@ -70,14 +69,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/padding_form_child"
-                android:text="Giorno:"/>
+                android:fontFamily="@font/roboto_regular"
+                android:text="Anno:"/>
 
             <EditText
-                android:id="@+id/etGiorno"
-                android:layout_width="@dimen/edittext_w_min"
+                android:id="@+id/etAnno"
+                android:layout_width="@dimen/edittext_w"
                 android:layout_height="@dimen/edittext_h"
+                android:hint="2020"
                 android:inputType="number"
-                android:hint="01"
                 android:text=""
                 android:textAlignment="textEnd"/>
         </LinearLayout>
@@ -132,39 +132,34 @@
                 android:text=""
                 android:textAlignment="textEnd"/>
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="right">
+
+            <ImageButton
+                android:visibility="invisible"
+                android:id="@+id/btnIndietro"
+                android:layout_width="@dimen/button_small"
+                android:layout_height="@dimen/button_small"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
+                android:padding="10dp"
+                android:background="@drawable/stile_bottone_completo"
+                android:src="@drawable/back"
+                android:textColor="@color/dRosso"/>
+
+            <ImageButton
+                android:id="@+id/btnConferma"
+                android:layout_width="@dimen/button_small"
+                android:layout_height="@dimen/button_small"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
+                android:padding="10dp"
+                android:background="@drawable/stile_bottone_completo_verde"
+                android:src="@drawable/confirm"
+                android:textColor="@color/dVerde"/>
+        </LinearLayout>
     </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/llModifica"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_below="@id/llFormOrario"
-        android:gravity="right">
-
-        <ImageButton
-            android:id="@+id/btnIndietro"
-            android:layout_width="@dimen/button_small"
-            android:layout_height="@dimen/button_small"
-            android:layout_margin="@dimen/padding_form_child"
-            android:layout_marginBottom="@dimen/padding_form_child"
-            android:padding="10dp"
-            android:background="@drawable/stile_bottone_completo"
-            android:src="@drawable/back"
-            android:textColor="@color/dRosso"
-            android:onClick="indietro"/>
-
-        <ImageButton
-            android:id="@+id/btnConfermaModifica"
-            android:layout_width="@dimen/button_small"
-            android:layout_height="@dimen/button_small"
-            android:layout_margin="@dimen/padding_form_child"
-            android:layout_marginBottom="@dimen/padding_form_child"
-            android:padding="10dp"
-            android:background="@drawable/stile_bottone_completo"
-            android:src="@drawable/confirm"
-            android:textColor="@color/dRosso"
-            android:onClick="confermaDatiModificati"/>
-    </LinearLayout>
-
 </RelativeLayout>

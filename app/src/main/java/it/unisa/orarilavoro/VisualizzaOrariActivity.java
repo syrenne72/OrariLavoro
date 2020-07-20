@@ -2,6 +2,8 @@ package it.unisa.orarilavoro;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,6 +23,7 @@ import android.view.Window;
 import android.widget.CursorAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -35,8 +38,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Calendar;
 
-public class VisualizzaOrariActivity extends AppCompatActivity {
+public class VisualizzaOrariActivity extends AppCompatActivity implements InserimentoDati.InvioDatiListener {
     private ListView lvOrariTotali;
+    private FrameLayout flInserimento;
     private TextView tvTotaleOre;
     private EditText etDaGiorno, etAGiorno, etNomePdf;
     private DatePickerDialog picker;
@@ -45,6 +49,8 @@ public class VisualizzaOrariActivity extends AppCompatActivity {
     private CursorAdapter adapter;
     private Cursor cursorOrari;
     private DbManager.MyResult myResult;
+    private FragmentManager fm;
+    private InserimentoDati inserimentoDatiFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +61,7 @@ public class VisualizzaOrariActivity extends AppCompatActivity {
         ActivityCompat.requestPermissions(VisualizzaOrariActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
 
         lvOrariTotali = findViewById(R.id.lvOrariTotali);
+        flInserimento = findViewById(R.id.flInserimento);
         tvTotaleOre = findViewById(R.id.tvTotaleOre);
         etDaGiorno = findViewById(R.id.etDaGiorno);
         etAGiorno = findViewById(R.id.etAGiorno);
@@ -64,6 +71,15 @@ public class VisualizzaOrariActivity extends AppCompatActivity {
 
         /*Inizializzo gli EditText per la ricerca dei dati*/
         inizializzaRicerca();
+
+        /*Carico il frammento per l'inserimento dati*/
+        inserimentoDatiFragment = new InserimentoDati();
+        fm = getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.flInserimento, inserimentoDatiFragment);
+        ft.hide(inserimentoDatiFragment);
+        ft.commit();
+        /***********/
 
         //Prendo tutti gli orari memorizzati
         myResult = dbManager.findAll();
@@ -80,13 +96,21 @@ public class VisualizzaOrariActivity extends AppCompatActivity {
      * @param view
      */
     public void stampa(View view) {
-        String stampa = "", nomePdf = "/Orari lavoro/Orari di lavoro";
+        String stampa = "", cartella = "/Orari lavoro", nomePdf = "/Orari di lavoro";
         String da = etDaGiorno.getText().toString();
         String a = etAGiorno.getText().toString();
         boolean fineStampa = false;
 
+        /*Se la directory non esiste, la creo*/
+        File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + cartella);
+
+        if(!directory.exists()) {
+            directory.mkdirs();
+        }
+        /************************************/
+
         if(etNomePdf.getText().toString().length() != 0)
-            nomePdf = "/Orari lavoro/" + etNomePdf.getText().toString();
+            nomePdf = "/" + etNomePdf.getText().toString();
 
         //Numero di pagine
         int pagine = myResult.getDatiTotali() / 30 + 1;
@@ -148,24 +172,25 @@ public class VisualizzaOrariActivity extends AppCompatActivity {
         }
 
         //Stampo le ore totali
-        myPage.getCanvas().drawText(("Ore totali: " + myResult.getTot()), x, y + 10, myPaint);
+        myPage.getCanvas().drawText(("Ore totali: " + tvTotaleOre.getText()), x, y + 10, myPaint);
         myPdfDocument.finishPage(myPage);
 
         /*******/
 
-        String myFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + nomePdf + ".pdf";
+        String myFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + cartella + nomePdf + ".pdf";
         File myFile = new File(myFilePath);
         int i = 0;
 
         while(i >= 0) {
             if (myFile.exists()) {
                 i++;
-                myFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + nomePdf + " (" + i + ").pdf";
+                myFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + cartella + nomePdf + " (" + i + ").pdf";
                 myFile = new File(myFilePath);
             } else
                 break;
         }
 
+        /*Salvo il pdf*/
         try {
             myPdfDocument.writeTo(new FileOutputStream(myFile));
         }
@@ -174,6 +199,7 @@ public class VisualizzaOrariActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Si è verificato un errore durante la creazione del PDF", Toast.LENGTH_SHORT).show();
             return;
         }
+        /************/
 
         myPdfDocument.close();
         Toast.makeText(getApplicationContext(), "PDF creato in " + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + "/Orari lavoro", Toast.LENGTH_SHORT).show();
@@ -269,7 +295,7 @@ public class VisualizzaOrariActivity extends AppCompatActivity {
                 btnModifica.setTag(id);
                 btnCancella.setTag(id);
 
-                Log.i("KIWIBUNNY", this.getClass().getSimpleName() + ": id dei dati caricati: " + id);
+                //Log.i("KIWIBUNNY", this.getClass().getSimpleName() + ": id dei dati caricati: " + id);
 
                 /**
                  * Chiama una nuova activity che permette la modifica dell'orario
@@ -277,9 +303,14 @@ public class VisualizzaOrariActivity extends AppCompatActivity {
                 btnModifica.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        FragmentTransaction ft = fm.beginTransaction();
+                        ft.show(inserimentoDatiFragment);
+                        ft.commit();
+
+                        Intent intent = new Intent("STRING_ID_FOR_BRODCAST");
                         int id = (int) view.getTag();
 
-                        Log.i("KIWIBUNNY", this.getClass().getSimpleName()  + ": si vuole modificare il dato " + id);
+                        Log.i("KIWIBUNNY", "VisualizzaOrari - btnModifica - onClick: si vuole modificare il dato " + id);
 
                         Cursor cursor = dbManager.findById((int) id);
                         cursor.moveToNext();
@@ -294,16 +325,16 @@ public class VisualizzaOrariActivity extends AppCompatActivity {
                         totale = cursor.getInt(cursor.getColumnIndex(DatabaseStrings.FIELD_ORE_TOTALI));
                         _id = (int) cursor.getLong(cursor.getColumnIndex(DatabaseStrings.FIELD_ID));
 
-                        Intent i = new Intent(getApplicationContext(), ModificaOrarioActivity.class);
-                        i.putExtra("anno", anno);
-                        i.putExtra("mese", mese);
-                        i.putExtra("giorno", giorno);
-                        i.putExtra("daOra", daOra);
-                        i.putExtra("aOra", aOra);
-                        i.putExtra("totale", totale);
-                        i.putExtra("id", _id);
+                        intent.putExtra("anno",anno);
+                        intent.putExtra("mese", mese);
+                        intent.putExtra("giorno", giorno);
+                        intent.putExtra("daOra", daOra);
+                        intent.putExtra("aOra", aOra);
+                        intent.putExtra("totale", totale);
+                        intent.putExtra("_id", _id);
+                        intent.putExtra("temp", true);
 
-                        startActivityForResult(i, 0);
+                        sendBroadcast(intent);
                     }
                 });
 
@@ -385,8 +416,17 @@ public class VisualizzaOrariActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        reload();
+    public void onInvioDati(int codice, int[] dati) {
+        if(codice == MODIFICA_DATI) {
+            int anno = dati[0], mese = dati[1], giorno = dati[2], daOra = dati[3], aOra = dati[4], totale = dati[5], _id = dati[6];
+
+            dbManager.modificaById(_id, anno, mese, giorno, daOra, aOra, totale);
+
+            reload();
+        } else if(codice == RIMUOVI_FRAMMENTO) {
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.hide(inserimentoDatiFragment);
+            ft.commit();
+        }
     }
 }
