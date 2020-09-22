@@ -51,7 +51,7 @@
 
             <EditText
                 android:id="@+id/etInizio"
-                android:layout_width="@dimen/edittext_w_min"
+                android:layout_width="@dimen/edittext_w"
                 android:layout_height="wrap_content"
                 android:gravity="end"/>
 
@@ -63,7 +63,7 @@
 
             <EditText
                 android:id="@+id/etFine"
-                android:layout_width="@dimen/edittext_w_min"
+                android:layout_width="@dimen/edittext_w"
                 android:layout_height="wrap_content"
                 android:gravity="end"/>
         </LinearLayout>
@@ -80,7 +80,7 @@
 
             <EditText
                 android:id="@+id/etPausa"
-                android:layout_width="@dimen/edittext_w_min"
+                android:layout_width="@dimen/edittext_w"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
 

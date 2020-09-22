@@ -1,6 +1,9 @@
 package it.unisa.orarilavoro;
 
+import android.util.Log;
+
 import java.io.Serializable;
+import java.util.GregorianCalendar;
 
 public class Orario implements Serializable {
     public int id;
@@ -191,8 +194,8 @@ public class Orario implements Serializable {
                 '}';
     }
 
-    public static String calcoloOreTotali(String da, String a) {
-        int daOra, daMinuto, aOra, aMinuto, totOre, totMinuti;
+    public static String calcoloOreTotali(String da, String a, int p) {
+        int daOra, daMinuto, aOra, aMinuto, oraPausa, minutoPausa, totOre, totMinuti;
 
         String strData[] = da.split(":");
         daOra = Integer.parseInt(strData[0]);
@@ -202,15 +205,32 @@ public class Orario implements Serializable {
         aOra = Integer.parseInt(strData[0]);
         aMinuto = Integer.parseInt(strData[1]);
 
-        if(aMinuto >= daMinuto) {
+        /*if(aMinuto >= daMinuto) {
             totMinuti = aMinuto;
             totOre = aOra - daOra;
         } else {
             aMinuto += 60;
             totMinuti = aMinuto - daMinuto;
             totOre = aOra - daOra - 1;
-        }
+        }*/
+
+        totOre = ((aOra * 60 + aMinuto) - (daOra * 60 + daMinuto) - p) / 60;
+        totMinuti = ((aOra * 60 + aMinuto) - (daOra * 60 + daMinuto) - p) % 60;
 
         return String.format("%02d:%02d", totOre, totMinuti);
+    }
+
+    public static boolean isDateInRange(int year, int month, int day, int yearFrom, int monthFrom, int dayFrom, int yearUntil, int monthUntil, int dayUntil) {
+        GregorianCalendar testDate = new GregorianCalendar(year, month, day);
+        GregorianCalendar startDate = new GregorianCalendar(yearFrom, monthFrom, dayFrom);
+        GregorianCalendar endDate = new GregorianCalendar(yearUntil, monthUntil, dayUntil);
+
+//        GregorianCalendar gg = new GregorianCalendar(2020, 9, 2);
+//        GregorianCalendar g = new GregorianCalendar(2020, 9, 1);
+//
+//        Log.i("KIWIBUNNY", "Prima>>>>>: " + g.before(new GregorianCalendar(2020, 8, 1)) + "Dopo: " + g.after(new GregorianCalendar(2020, 8, 31)));
+//        Log.i("KIWIBUNNY", "Prima: " + gg.before(new GregorianCalendar(2020, 8, 1)) + "Dopo: " + gg.after(new GregorianCalendar(2020, 8, 31)));
+
+        return !(testDate.before(startDate) || testDate.after(endDate));
     }
 }
