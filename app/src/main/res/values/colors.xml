@@ -5,12 +5,12 @@
     <color name="colorAccent">#03DAC5</color>
     <color name="pRosso">#c62828</color>
     <color name="lRosso">#ff5f52</color>
-    <color name="vlRosso">#0FFF5F52</color>
+    <color name="vlRosso">#32FF5F52</color>
     <color name="dRosso">#8e0000</color>
     <color name="pGrigio">#455a64</color>
     <color name="lGrigio">#718792</color>
     <color name="vlGrigio">#07718792</color>
-    <color name="mlGrigio">#14718792</color>
+    <color name="mlGrigio">#34718792</color>
     <color name="dGrigio">#1c313a</color>
     <color name="dVerde">#4CAF50</color>
     <color name="mVerde">#8BC34A</color>

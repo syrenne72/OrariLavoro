@@ -3,7 +3,9 @@
     package="it.unisa.orarilavoro">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:allowBackup="true"
@@ -24,6 +26,12 @@
         <activity android:name=".VisualizzaOrariActivity"/>
         <activity android:name=".ModificaOrarioActivity"/>
         <activity android:name=".Impostazioni"/>
+        <receiver android:name=".AlarmBroadcastReceiver"
+            android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

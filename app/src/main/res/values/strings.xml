@@ -1,3 +1,33 @@
 <resources>
     <string name="app_name">Work Keeper</string>
+
+    <string-array name="anno_array">
+        <item>2019</item>
+        <item>2020</item>
+        <item>2021</item>
+    </string-array>
+
+    <string-array name="quantity_array">
+        <item>ultimi 10</item>
+        <item>ultimi 30</item>
+        <item>ultimi 50</item>
+        <item>ultimi 100</item>
+        <item>tutti</item>
+    </string-array>
+
+    <string-array name="mese_array">
+        <item>Mostra tutto</item>
+        <item>Gennaio</item>
+        <item>Febbraio</item>
+        <item>Marzo</item>
+        <item>Aprile</item>
+        <item>Maggio</item>
+        <item>Giugno</item>
+        <item>Luglio</item>
+        <item>Agosto</item>
+        <item>Settembre</item>
+        <item>Ottobre</item>
+        <item>Novembre</item>
+        <item>Dicembre</item>
+    </string-array>
 </resources>

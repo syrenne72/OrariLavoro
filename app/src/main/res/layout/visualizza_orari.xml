@@ -14,7 +14,7 @@
         android:id="@+id/llRicerca"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_below="@id/flInserimento"
         android:background="@color/lRosso">
 
@@ -26,79 +26,113 @@
             android:layout_marginRight="@dimen/padding_form_child"
             android:layout_marginLeft="@dimen/padding_form_child"
             android:layout_alignParentTop="true"
-            android:textSize="@dimen/text_large"
+            android:textSize="@dimen/text_medium_max"
             android:fontFamily="@font/roboto_thin"
             android:textColor="@color/dGrigio"
-            android:text="Seleziona intervallo di date:"/>
+            android:text="Ricerca:"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <Spinner
+            android:id="@+id/sMonth"
+            android:layout_width="140dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/padding_form_child"
+            android:layout_marginRight="@dimen/padding_form_child"
+            android:layout_marginLeft="@dimen/padding_form_child"/>
+
+        <Spinner
+            android:id="@+id/sOptions"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/padding_form_child"/>
+
+        <ImageButton
+            android:id="@+id/ibSearch"
+            android:layout_width="@dimen/button_small"
+            android:layout_height="@dimen/button_small_h"
+            android:layout_marginRight="@dimen/padding_form_child"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="@dimen/padding_form_child"
+            android:layout_marginLeft="@dimen/padding_form_child"
+            android:background="@drawable/stile_bottone_completo_grigio"
+            android:src="@drawable/search"
+            android:onClick="searchSpinnerData"/>
+    </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/cAdvancedSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/llRicerca"
+        android:background="@color/lRosso"
+        android:text="ricerca avanzata"
+        android:onClick="onClickAdvancedSearch"/>
+
+    <LinearLayout
+        android:id="@+id/llAdvancedSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/cAdvancedSearch"
+        android:background="@color/lRosso"
+        android:visibility="invisible">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/padding_form_child"
+            android:fontFamily="@font/roboto_thin"
+            android:textColor="@color/dGrigio"
+            android:text="Da: "
+            android:textSize="@dimen/text_medium_max"
+            android:layout_gravity="center"/>
+
+        <EditText
+            android:id="@+id/etDaGiorno"
+            android:layout_width="@dimen/data"
+            android:layout_height="@dimen/edittext_h"
+            android:layout_marginRight="@dimen/padding_form_child"
+            android:textAlignment="textEnd"
+            android:focusable="false"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/padding_form_child"
+            android:fontFamily="@font/roboto_thin"
+            android:textColor="@color/dGrigio"
+            android:text="A: "
+            android:textSize="@dimen/text_medium_max"
+            android:layout_gravity="center"/>
+
+        <EditText
+            android:id="@+id/etAGiorno"
+            android:layout_width="@dimen/data"
+            android:layout_height="@dimen/edittext_h"
+            android:layout_marginRight="@dimen/margin_small"
+            android:textAlignment="textEnd"
+            android:focusable="false"/>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
             android:orientation="horizontal"
-            android:layout_below="@id/tvRicerca">
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/padding_form_child"
-                    android:fontFamily="@font/roboto_thin"
-                    android:textColor="@color/dGrigio"
-                    android:text="Da: "
-                    android:textSize="@dimen/text_medium_max"
-                    android:layout_gravity="center"/>
-
-                <EditText
-                    android:id="@+id/etDaGiorno"
-                    android:layout_width="@dimen/data"
-                    android:layout_height="@dimen/edittext_h"
-                    android:layout_marginRight="@dimen/padding_form_child"
-                    android:textAlignment="textEnd"
-                    android:focusable="false"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/padding_form_child"
-                    android:fontFamily="@font/roboto_thin"
-                    android:textColor="@color/dGrigio"
-                    android:text="A: "
-                    android:textSize="@dimen/text_medium_max"
-                    android:layout_gravity="center"/>
-
-                <EditText
-                    android:id="@+id/etAGiorno"
-                    android:layout_width="@dimen/data"
-                    android:layout_height="@dimen/edittext_h"
-                    android:layout_marginRight="@dimen/margin_small"
-                    android:textAlignment="textEnd"
-                    android:focusable="false"/>
-            </LinearLayout>
-            <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:orientation="horizontal"
-                android:gravity="right">
-                <ImageButton
-                    android:layout_width="@dimen/button_small"
-                    android:layout_height="@dimen/button_small_h"
-                    android:layout_marginRight="@dimen/padding_form_child"
-                    android:layout_centerInParent="true"
-                    android:background="@drawable/stile_bottone_completo_grigio"
-                    android:src="@drawable/search"
-                    android:onClick="cercaDati"/>
-            </RelativeLayout>
-        </LinearLayout>
+            android:gravity="right">
+            <ImageButton
+                android:layout_width="@dimen/button_small"
+                android:layout_height="@dimen/button_small_h"
+                android:layout_marginRight="@dimen/padding_form_child"
+                android:layout_centerInParent="true"
+                android:background="@drawable/stile_bottone_completo_grigio"
+                android:src="@drawable/search"
+                android:onClick="cercaDati"/>
+        </RelativeLayout>
     </LinearLayout>
 
     <ListView
         android:id="@+id/lvOrariTotali"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/llRicerca"
+        android:layout_below="@id/cAdvancedSearch"
         android:layout_above="@id/llTotaleOre"
         android:layout_marginTop="@dimen/padding_form_child"
         android:layout_marginRight="@dimen/padding_form_child"
