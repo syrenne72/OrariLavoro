@@ -56,8 +56,8 @@ public class MainActivity extends AppCompatActivity {
     public void myAlarm() {
 
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 6);
-        calendar.set(Calendar.MINUTE, 10);
+        calendar.set(Calendar.HOUR_OF_DAY, 19);
+        calendar.set(Calendar.MINUTE, 00);
 
         ComponentName receiver = new ComponentName(this, AlarmBroadcastReceiver.class);
         PackageManager pm = this.getPackageManager();

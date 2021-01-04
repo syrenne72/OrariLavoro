@@ -4,14 +4,19 @@ import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.CharArrayBuffer;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
+import android.database.DataSetObserver;
 import android.graphics.Paint;
 import android.graphics.pdf.PdfDocument;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -58,6 +63,8 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
     private DbManager.MyResult myResult;
     private FragmentManager fm;
     private InserimentoDati inserimentoDatiFragment;
+    private String[] monthName = {"", "Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno",
+            "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +81,6 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
         tvTotaleOre = findViewById(R.id.tvTotaleOre);
         etDaGiorno = findViewById(R.id.etDaGiorno);
         etAGiorno = findViewById(R.id.etAGiorno);
-        etNomePdf = findViewById(R.id.etNomePdf);
         sOptions = findViewById(R.id.sOptions);
         sMonth = findViewById(R.id.sMonth);
         ibSearch = findViewById(R.id.ibSearch);
@@ -139,7 +145,10 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
         refreshListView();
 
         /*Mostro le ore totali di tutti i risultati disponibili*/
-        tvTotaleOre.setText(myResult.getTotale());
+        if(myResult != null)
+            tvTotaleOre.setText(myResult.getTotale());
+        else
+            tvTotaleOre.setText(0 + "");
     }
 
     /**
@@ -187,114 +196,134 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
      * Stampa un pdf delle informazioni mostrate sulla pagina
      * @param view
      */
-    public void stampa(View view) {
-        String stampa = "", cartella = "/Orari lavoro", nomePdf = "/Orari di lavoro";
-        String da = etDaGiorno.getText().toString();
-        String a = etAGiorno.getText().toString();
-        boolean fineStampa = false;
+    public void print(View view) {
+        AlertDialog alertDialog = new AlertDialog.Builder(view.getContext()).create();
+        alertDialog.setTitle("");
+        alertDialog.setMessage("Scegli il nome del pdf");
+        final EditText input = new EditText(this);
+        final String timeStamp = new SimpleDateFormat("yyyyMM").format(Calendar.getInstance().getTime());
+        input.setText(monthName[Integer.parseInt(timeStamp.substring(4))] + "_" + timeStamp.substring(0, 4));
+        alertDialog.setView(input);
 
-        /*Se la directory non esiste, la creo*/
-        File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + cartella);
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Stampa", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
 
-        if(!directory.exists()) {
-            directory.mkdirs();
-        }
-        /************************************/
+                String stampa, cartella = "/Orari lavoro", nomePdf = "/Orari di lavoro";
+                boolean fineStampa = false;
 
-        if(etNomePdf.getText().toString().length() != 0)
-            nomePdf = "/" + etNomePdf.getText().toString();
+                /*Se la directory non esiste, la creo*/
+                File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + cartella);
 
-        //Numero di pagine
-        int pagine = myResult.getDatiTotali() / 30 + 1;
-
-        //Spostamento x e y dell'inizio della frase
-        int x = 20, y = 30;
-
-        PdfDocument myPdfDocument = new PdfDocument();
-        PdfDocument.PageInfo myPageInfo = new PdfDocument.PageInfo.Builder(400,647, 1).create();
-        PdfDocument.Page myPage = myPdfDocument.startPage(myPageInfo);
-        Paint myPaint = new Paint();
-
-        Cursor cursorOrari = myResult.cursor;
-        cursorOrari.moveToFirst();
-
-        if(cursorOrari.isNull(0))
-            return;
-
-        myPage.getCanvas().drawText(myResult.type, x, y, myPaint);
-        y += myPaint.descent() - myPaint.ascent() + 10;
-
-        Log.i("kiwi", this.getClass().getSimpleName() + ": stampa: title: " + myResult.type);
-
-        /*Stampa delle pagine*/
-        for(int i = 0; i < pagine && !fineStampa; i++) {
-            for (int j = 0; j < 30; j++) {
-                int anno, mese, giorno, daOra, aOra, totale;
-
-                anno = cursorOrari.getInt(cursorOrari.getColumnIndex(DatabaseStrings.FIELD_ANNO));
-                mese = cursorOrari.getInt(cursorOrari.getColumnIndex(DatabaseStrings.FIELD_MESE));
-                giorno = cursorOrari.getInt(cursorOrari.getColumnIndex(DatabaseStrings.FIELD_GIORNO));
-                daOra = cursorOrari.getInt(cursorOrari.getColumnIndex(DatabaseStrings.FIELD_DA_ORA));
-                aOra = cursorOrari.getInt(cursorOrari.getColumnIndex(DatabaseStrings.FIELD_A_ORA));
-                totale = cursorOrari.getInt(cursorOrari.getColumnIndex(DatabaseStrings.FIELD_ORE_TOTALI));
-
-                Log.d("KIWI", "VisualizzaOrariActivity: " + i + 1 + "° pagina " + giorno + "/" + mese + "/" + anno);
-
-                stampa = "Data: " + String.format("%02d/%02d/%04d", giorno, mese, anno) + "   Dalle ore: " + daOra + ":00    Alle ore: " + aOra + ":00    Totale: " + totale + "\n";
-
-                myPage.getCanvas().drawText(stampa, x, y, myPaint);
-
-                //Calcolo lo spostamento verticale da cui partire per la prossima scritta
-                y += myPaint.descent() - myPaint.ascent();
-
-                //Passo al prossimo dato
-                if (!cursorOrari.moveToNext()) {
-                    fineStampa = !fineStampa;
-                    break;
+                if(!directory.exists()) {
+                    directory.mkdirs();
                 }
-            }
+                /************************************/
 
-            if (!fineStampa) {
+                if(input.getText().toString().length() != 0)
+                    nomePdf = "/" + input.getText().toString();
+
+                //Numero di pagine
+                int pagine = myResult.getDatiTotali() / 30 + 1;
+
+                //Spostamento x e y dell'inizio della frase
+                int x = 20, y = 30;
+
+                PdfDocument myPdfDocument = new PdfDocument();
+                PdfDocument.PageInfo myPageInfo = new PdfDocument.PageInfo.Builder(400,647, 1).create();
+                PdfDocument.Page myPage = myPdfDocument.startPage(myPageInfo);
+                Paint myPaint = new Paint();
+
+                Cursor cursorOrari = myResult.cursor;
+                cursorOrari.moveToFirst();
+
+                if(cursorOrari.isNull(0))
+                    return;
+
+                myPage.getCanvas().drawText(myResult.type, x, y, myPaint);
+                y += myPaint.descent() - myPaint.ascent() + 10;
+
+                Log.i("kiwi", this.getClass().getSimpleName() + ": stampa: title: " + myResult.type);
+
+                /*Stampa delle pagine*/
+                for(int i = 0; i < pagine && !fineStampa; i++) {
+                    for (int j = 0; j < 30; j++) {
+                        int anno, mese, giorno, daOra, aOra, totale;
+
+                        anno = cursorOrari.getInt(cursorOrari.getColumnIndex(DatabaseStrings.FIELD_ANNO));
+                        mese = cursorOrari.getInt(cursorOrari.getColumnIndex(DatabaseStrings.FIELD_MESE));
+                        giorno = cursorOrari.getInt(cursorOrari.getColumnIndex(DatabaseStrings.FIELD_GIORNO));
+                        daOra = cursorOrari.getInt(cursorOrari.getColumnIndex(DatabaseStrings.FIELD_DA_ORA));
+                        aOra = cursorOrari.getInt(cursorOrari.getColumnIndex(DatabaseStrings.FIELD_A_ORA));
+                        totale = cursorOrari.getInt(cursorOrari.getColumnIndex(DatabaseStrings.FIELD_ORE_TOTALI));
+
+                        Log.d("KIWI", "VisualizzaOrariActivity: " + i + 1 + "° pagina " + giorno + "/" + mese + "/" + anno);
+
+                        stampa = "Data: " + String.format("%02d/%02d/%04d", giorno, mese, anno) + "   Dalle ore: " + daOra + ":00    Alle ore: " + aOra + ":00    Totale: " + totale + "\n";
+
+                        myPage.getCanvas().drawText(stampa, x, y, myPaint);
+
+                        //Calcolo lo spostamento verticale da cui partire per la prossima scritta
+                        y += myPaint.descent() - myPaint.ascent();
+
+                        //Passo al prossimo dato
+                        if (!cursorOrari.moveToNext()) {
+                            fineStampa = !fineStampa;
+                            break;
+                        }
+                    }
+
+                    if (!fineStampa) {
+                        myPdfDocument.finishPage(myPage);
+                        myPage = myPdfDocument.startPage(myPageInfo);
+                        myPaint = new Paint();
+                        x = 20;
+                        y = 30;
+                    }
+                }
+
+                //Stampo le ore totali
+                myPage.getCanvas().drawText(("Ore totali: " + tvTotaleOre.getText()), x, y + 10, myPaint);
                 myPdfDocument.finishPage(myPage);
-                myPage = myPdfDocument.startPage(myPageInfo);
-                myPaint = new Paint();
-                x = 20;
-                y = 30;
+
+                /*******/
+
+                String myFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + cartella + nomePdf + ".pdf";
+                File myFile = new File(myFilePath);
+                int i = 0;
+
+                while(i >= 0) {
+                    if (myFile.exists()) {
+                        i++;
+                        myFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + cartella + nomePdf + " (" + i + ").pdf";
+                        myFile = new File(myFilePath);
+                    } else
+                        break;
+                }
+
+                /*Salvo il pdf*/
+                try {
+                    myPdfDocument.writeTo(new FileOutputStream(myFile));
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "Si è verificato un errore durante la creazione del PDF", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                /************/
+
+                myPdfDocument.close();
+                Toast.makeText(getApplicationContext(), "PDF creato in " + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + "/Orari lavoro", Toast.LENGTH_SHORT).show();
+
+                reload();
             }
-        }
-
-        //Stampo le ore totali
-        myPage.getCanvas().drawText(("Ore totali: " + tvTotaleOre.getText()), x, y + 10, myPaint);
-        myPdfDocument.finishPage(myPage);
-
-        /*******/
-
-        String myFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + cartella + nomePdf + ".pdf";
-        File myFile = new File(myFilePath);
-        int i = 0;
-
-        while(i >= 0) {
-            if (myFile.exists()) {
-                i++;
-                myFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + cartella + nomePdf + " (" + i + ").pdf";
-                myFile = new File(myFilePath);
-            } else
-                break;
-        }
-
-        /*Salvo il pdf*/
-        try {
-            myPdfDocument.writeTo(new FileOutputStream(myFile));
-        }
-        catch (Exception e){
-            e.printStackTrace();
-            Toast.makeText(getApplicationContext(), "Si è verificato un errore durante la creazione del PDF", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        /************/
-
-        myPdfDocument.close();
-        Toast.makeText(getApplicationContext(), "PDF creato in " + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + "/Orari lavoro", Toast.LENGTH_SHORT).show();
+        });
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Indietro", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alertDialog.show();
     }
 
     /**
@@ -404,6 +433,421 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
      * Refresh listview with new data
      */
     private void refreshListView() {
+        if(myResult == null) {
+            myResult = new DbManager.MyResult("s", new Cursor() {
+                @Override
+                public int getCount() {
+                    return 0;
+                }
+
+                @Override
+                public int getPosition() {
+                    return 0;
+                }
+
+                @Override
+                public boolean move(int i) {
+                    return false;
+                }
+
+                @Override
+                public boolean moveToPosition(int i) {
+                    return false;
+                }
+
+                @Override
+                public boolean moveToFirst() {
+                    return false;
+                }
+
+                @Override
+                public boolean moveToLast() {
+                    return false;
+                }
+
+                @Override
+                public boolean moveToNext() {
+                    return false;
+                }
+
+                @Override
+                public boolean moveToPrevious() {
+                    return false;
+                }
+
+                @Override
+                public boolean isFirst() {
+                    return false;
+                }
+
+                @Override
+                public boolean isLast() {
+                    return false;
+                }
+
+                @Override
+                public boolean isBeforeFirst() {
+                    return false;
+                }
+
+                @Override
+                public boolean isAfterLast() {
+                    return false;
+                }
+
+                @Override
+                public int getColumnIndex(String s) {
+                    return 0;
+                }
+
+                @Override
+                public int getColumnIndexOrThrow(String s) throws IllegalArgumentException {
+                    return 0;
+                }
+
+                @Override
+                public String getColumnName(int i) {
+                    return null;
+                }
+
+                @Override
+                public String[] getColumnNames() {
+                    return new String[0];
+                }
+
+                @Override
+                public int getColumnCount() {
+                    return 0;
+                }
+
+                @Override
+                public byte[] getBlob(int i) {
+                    return new byte[0];
+                }
+
+                @Override
+                public String getString(int i) {
+                    return null;
+                }
+
+                @Override
+                public void copyStringToBuffer(int i, CharArrayBuffer charArrayBuffer) {
+
+                }
+
+                @Override
+                public short getShort(int i) {
+                    return 0;
+                }
+
+                @Override
+                public int getInt(int i) {
+                    return 0;
+                }
+
+                @Override
+                public long getLong(int i) {
+                    return 0;
+                }
+
+                @Override
+                public float getFloat(int i) {
+                    return 0;
+                }
+
+                @Override
+                public double getDouble(int i) {
+                    return 0;
+                }
+
+                @Override
+                public int getType(int i) {
+                    return 0;
+                }
+
+                @Override
+                public boolean isNull(int i) {
+                    return false;
+                }
+
+                @Override
+                public void deactivate() {
+
+                }
+
+                @Override
+                public boolean requery() {
+                    return false;
+                }
+
+                @Override
+                public void close() {
+
+                }
+
+                @Override
+                public boolean isClosed() {
+                    return false;
+                }
+
+                @Override
+                public void registerContentObserver(ContentObserver contentObserver) {
+
+                }
+
+                @Override
+                public void unregisterContentObserver(ContentObserver contentObserver) {
+
+                }
+
+                @Override
+                public void registerDataSetObserver(DataSetObserver dataSetObserver) {
+
+                }
+
+                @Override
+                public void unregisterDataSetObserver(DataSetObserver dataSetObserver) {
+
+                }
+
+                @Override
+                public void setNotificationUri(ContentResolver contentResolver, Uri uri) {
+
+                }
+
+                @Override
+                public Uri getNotificationUri() {
+                    return null;
+                }
+
+                @Override
+                public boolean getWantsAllOnMoveCalls() {
+                    return false;
+                }
+
+                @Override
+                public void setExtras(Bundle bundle) {
+
+                }
+
+                @Override
+                public Bundle getExtras() {
+                    return null;
+                }
+
+                @Override
+                public Bundle respond(Bundle bundle) {
+                    return null;
+                }
+            }, 0, 0, 0);
+            myResult.cursor = new Cursor() {
+                @Override
+                public int getCount() {
+                    return 0;
+                }
+
+                @Override
+                public int getPosition() {
+                    return 0;
+                }
+
+                @Override
+                public boolean move(int i) {
+                    return false;
+                }
+
+                @Override
+                public boolean moveToPosition(int i) {
+                    return false;
+                }
+
+                @Override
+                public boolean moveToFirst() {
+                    return false;
+                }
+
+                @Override
+                public boolean moveToLast() {
+                    return false;
+                }
+
+                @Override
+                public boolean moveToNext() {
+                    return false;
+                }
+
+                @Override
+                public boolean moveToPrevious() {
+                    return false;
+                }
+
+                @Override
+                public boolean isFirst() {
+                    return false;
+                }
+
+                @Override
+                public boolean isLast() {
+                    return false;
+                }
+
+                @Override
+                public boolean isBeforeFirst() {
+                    return false;
+                }
+
+                @Override
+                public boolean isAfterLast() {
+                    return false;
+                }
+
+                @Override
+                public int getColumnIndex(String s) {
+                    return 0;
+                }
+
+                @Override
+                public int getColumnIndexOrThrow(String s) throws IllegalArgumentException {
+                    return 0;
+                }
+
+                @Override
+                public String getColumnName(int i) {
+                    return null;
+                }
+
+                @Override
+                public String[] getColumnNames() {
+                    return new String[0];
+                }
+
+                @Override
+                public int getColumnCount() {
+                    return 0;
+                }
+
+                @Override
+                public byte[] getBlob(int i) {
+                    return new byte[0];
+                }
+
+                @Override
+                public String getString(int i) {
+                    return null;
+                }
+
+                @Override
+                public void copyStringToBuffer(int i, CharArrayBuffer charArrayBuffer) {
+
+                }
+
+                @Override
+                public short getShort(int i) {
+                    return 0;
+                }
+
+                @Override
+                public int getInt(int i) {
+                    return 0;
+                }
+
+                @Override
+                public long getLong(int i) {
+                    return 0;
+                }
+
+                @Override
+                public float getFloat(int i) {
+                    return 0;
+                }
+
+                @Override
+                public double getDouble(int i) {
+                    return 0;
+                }
+
+                @Override
+                public int getType(int i) {
+                    return 0;
+                }
+
+                @Override
+                public boolean isNull(int i) {
+                    return false;
+                }
+
+                @Override
+                public void deactivate() {
+
+                }
+
+                @Override
+                public boolean requery() {
+                    return false;
+                }
+
+                @Override
+                public void close() {
+
+                }
+
+                @Override
+                public boolean isClosed() {
+                    return false;
+                }
+
+                @Override
+                public void registerContentObserver(ContentObserver contentObserver) {
+
+                }
+
+                @Override
+                public void unregisterContentObserver(ContentObserver contentObserver) {
+
+                }
+
+                @Override
+                public void registerDataSetObserver(DataSetObserver dataSetObserver) {
+
+                }
+
+                @Override
+                public void unregisterDataSetObserver(DataSetObserver dataSetObserver) {
+
+                }
+
+                @Override
+                public void setNotificationUri(ContentResolver contentResolver, Uri uri) {
+
+                }
+
+                @Override
+                public Uri getNotificationUri() {
+                    return null;
+                }
+
+                @Override
+                public boolean getWantsAllOnMoveCalls() {
+                    return false;
+                }
+
+                @Override
+                public void setExtras(Bundle bundle) {
+
+                }
+
+                @Override
+                public Bundle getExtras() {
+                    return null;
+                }
+
+                @Override
+                public Bundle respond(Bundle bundle) {
+                    return null;
+                }
+            };
+        }
+
         adapter = new CursorAdapter(this, myResult.cursor, 0) {
             @Override
             public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {

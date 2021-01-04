@@ -146,12 +146,6 @@
         android:layout_alignParentBottom="true"
         android:background="@color/mlGrigio">
 
-        <EditText
-            android:id="@+id/etNomePdf"
-            android:layout_width="@dimen/edittext_w_max"
-            android:layout_height="@dimen/edittext_h"
-            android:hint="nome_file"/>
-
         <ImageButton
             android:layout_width="@dimen/button_small"
             android:layout_height="@dimen/button_small_h"
@@ -161,7 +155,7 @@
             android:layout_marginBottom="@dimen/margin_small"
             android:background="@drawable/stile_bottone_completo_grigio"
             android:src="@drawable/print"
-            android:onClick="stampa"/>
+            android:onClick="print"/>
 
         <LinearLayout
             android:layout_width="fill_parent"

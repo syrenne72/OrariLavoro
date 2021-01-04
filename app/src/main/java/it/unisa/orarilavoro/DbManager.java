@@ -14,7 +14,7 @@ public class DbManager {
     private String[] monthName = {"", "Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno",
                                 "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"};
 
-    public class MyResult {
+    public static class MyResult {
         public String type;
         public Cursor cursor;
         public int ore;
@@ -152,7 +152,7 @@ public class DbManager {
         Cursor crs = null;
         String orderBy = DatabaseStrings.FIELD_ANNO + " DESC, " + DatabaseStrings.FIELD_MESE + " DESC, " + DatabaseStrings.FIELD_GIORNO + " DESC";
 
-        Log.i("KIWIBUNNY", this.getClass().getSimpleName() + ": findAll");
+        Log.i("kiwi", this.getClass().getSimpleName() + ": findAll");
 
         try {
             SQLiteDatabase db = dbhelper.getReadableDatabase();
@@ -178,7 +178,7 @@ public class DbManager {
 
         crs.moveToFirst();
 
-        while(crs.moveToNext()) {
+        do {
             matrixCursor.addRow(new Object[]{
                     (int) crs.getLong(crs.getColumnIndex(DatabaseStrings.FIELD_ID)),
                     crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ANNO)),
@@ -192,6 +192,8 @@ public class DbManager {
                     crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_MINUTI_TOTALI))
             });
 
+            Log.i("kiwi", this.getClass().getSimpleName() + ": findAll" + crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_GIORNO)) + "/" + crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_MESE)));
+
             ore += crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORE_TOTALI));
             minuti += crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_MINUTI_TOTALI));
 
@@ -201,7 +203,7 @@ public class DbManager {
             }
 
             x++;
-        }
+        } while(crs.moveToNext());
 
         //Setting the string from first time to stamp
         String fromType = "";
@@ -212,6 +214,8 @@ public class DbManager {
                     crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_MESE)) + "/" +
                     crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ANNO));
         }
+
+        Log.i("kiwi", this.getClass().getSimpleName() + ": findAll: " + fromType + toType);
 
         MyResult myResult = new MyResult(fromType + toType, matrixCursor, ore, minuti, x);
 
@@ -254,6 +258,9 @@ public class DbManager {
         int ore = 0, minuti = 0, x = 0;
 
         /*Ordino gli orari in ordine crescente e calcolo il totale delle ore*/
+        if(crs.getCount() == 0)
+            return null;
+
         crs.moveToLast();
 
         do {
