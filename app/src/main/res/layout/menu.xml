@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/logo"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="@dimen/main_logo"
+        android:layout_height="@dimen/main_logo"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="15dp"
         android:src="@drawable/logo_scritta"
@@ -23,8 +23,8 @@
         android:paddingTop="10dp">
 
         <Button
-            android:layout_width="190dp"
-            android:layout_height="50dp"
+            android:layout_width="@dimen/button_main_w"
+            android:layout_height="@dimen/button_main_h"
             android:layout_margin="@dimen/padding_form_child"
             android:padding="10dp"
             android:background="@drawable/stile_bottone_completo"
@@ -33,8 +33,8 @@
             android:onClick="aggiungiUnOrario"/>
 
         <Button
-            android:layout_width="190dp"
-            android:layout_height="50dp"
+            android:layout_width="@dimen/button_main_w"
+            android:layout_height="@dimen/button_main_h"
             android:layout_margin="@dimen/padding_form_child"
             android:padding="10dp"
             android:background="@drawable/stile_bottone_completo"
@@ -43,8 +43,8 @@
             android:onClick="visualizzaOrari"/>
 
         <Button
-            android:layout_width="190dp"
-            android:layout_height="50dp"
+            android:layout_width="@dimen/button_main_w"
+            android:layout_height="@dimen/button_main_h"
             android:layout_margin="@dimen/padding_form_child"
             android:padding="10dp"
             android:background="@drawable/stile_bottone_completo_grigio"
@@ -59,7 +59,23 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="5dp"
         android:gravity="center"
-        android:text="credit  Valeria Santarpia\nAll rights reserved"
+        android:text="credits Valeria Santarpia\nAll rights reserved"
         android:fontFamily="@font/roboto_thin"
         android:textSize="@dimen/text_small"/>
+
+    <ImageView
+        android:layout_width="@dimen/kiwi_icon"
+        android:layout_height="@dimen/kiwi_icon"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/rkiwi"/>
+
+    <ImageView
+        android:layout_width="@dimen/kiwi_icon"
+        android:layout_height="@dimen/kiwi_icon"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="20dp"
+        android:src="@drawable/lkiwi"/>
 </RelativeLayout>

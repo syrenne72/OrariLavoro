@@ -59,7 +59,6 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
 
     private DbManager dbManager;
     private CursorAdapter adapter;
-   // private Cursor cursorOrari;
     private DbManager.MyResult myResult;
     private FragmentManager fm;
     private InserimentoDati inserimentoDatiFragment;
@@ -140,15 +139,8 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
 
         //Prendo tutti gli orari memorizzati
         myResult = dbManager.findByMonthAndYear(Integer.parseInt(timeStamp.substring(4)), Integer.parseInt(timeStamp.substring(0, 4)));
-//        cursorOrari = myResult.getCursor();
 
         refreshListView();
-
-        /*Mostro le ore totali di tutti i risultati disponibili*/
-        if(myResult != null)
-            tvTotaleOre.setText(myResult.getTotale());
-        else
-            tvTotaleOre.setText(0 + "");
     }
 
     /**
@@ -331,9 +323,11 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
      * @param view la checkbox cliccata
      */
     public void onClickAdvancedSearch(View view) {
-        CheckBox c = (CheckBox) view;
+        Log.d("kiwi", "Chiamato onClick della ricerca avanzata");
 
-        if(c.isChecked()) {
+        if(cAdvancedSearch.isChecked()) {
+            Log.d("kiwi", "Ricerca avanzata attivata");
+
             llAdvancedSearch.setVisibility(View.VISIBLE);
             ibSearch.setVisibility(View.INVISIBLE);
             llRicerca.setBackgroundColor(getResources().getColor(R.color.vlGrigio));
@@ -344,6 +338,7 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
             params.addRule(RelativeLayout.ABOVE, R.id.llTotaleOre);
             lvOrariTotali.setLayoutParams(params);
         } else {
+            Log.d("kiwi", "Ricerca avanzata disattivata");
             llAdvancedSearch.setVisibility(View.INVISIBLE);
             ibSearch.setVisibility(View.VISIBLE);
             llRicerca.setBackgroundColor(getResources().getColor(R.color.lRosso));
@@ -395,7 +390,6 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
         }
 
         myResult = dbManager.findBetweenTwoDates(daG, daM, daA, aG, aM, aA);
-        tvTotaleOre.setText(myResult.getTotale());
         refreshListView();
     }
 
@@ -417,7 +411,6 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
             else
                 myResult = dbManager.findByMonthAndYear(month, Integer.parseInt(sOptions.getSelectedItem().toString()));
 
-            tvTotaleOre.setText(myResult.getTotale());
             refreshListView();
         } catch (IllegalStateException e) {
             Log.d("KIWI", "VisualizzaOrariActivity - searchSpinnerData: " + " problem with get month and year: " + e);
@@ -434,7 +427,7 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
      */
     private void refreshListView() {
         if(myResult == null) {
-            myResult = new DbManager.MyResult("s", new Cursor() {
+            myResult = new DbManager.MyResult("null", new Cursor() {
                 @Override
                 public int getCount() {
                     return 0;
@@ -640,212 +633,7 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
                     return null;
                 }
             }, 0, 0, 0);
-            myResult.cursor = new Cursor() {
-                @Override
-                public int getCount() {
-                    return 0;
-                }
-
-                @Override
-                public int getPosition() {
-                    return 0;
-                }
-
-                @Override
-                public boolean move(int i) {
-                    return false;
-                }
-
-                @Override
-                public boolean moveToPosition(int i) {
-                    return false;
-                }
-
-                @Override
-                public boolean moveToFirst() {
-                    return false;
-                }
-
-                @Override
-                public boolean moveToLast() {
-                    return false;
-                }
-
-                @Override
-                public boolean moveToNext() {
-                    return false;
-                }
-
-                @Override
-                public boolean moveToPrevious() {
-                    return false;
-                }
-
-                @Override
-                public boolean isFirst() {
-                    return false;
-                }
-
-                @Override
-                public boolean isLast() {
-                    return false;
-                }
-
-                @Override
-                public boolean isBeforeFirst() {
-                    return false;
-                }
-
-                @Override
-                public boolean isAfterLast() {
-                    return false;
-                }
-
-                @Override
-                public int getColumnIndex(String s) {
-                    return 0;
-                }
-
-                @Override
-                public int getColumnIndexOrThrow(String s) throws IllegalArgumentException {
-                    return 0;
-                }
-
-                @Override
-                public String getColumnName(int i) {
-                    return null;
-                }
-
-                @Override
-                public String[] getColumnNames() {
-                    return new String[0];
-                }
-
-                @Override
-                public int getColumnCount() {
-                    return 0;
-                }
-
-                @Override
-                public byte[] getBlob(int i) {
-                    return new byte[0];
-                }
-
-                @Override
-                public String getString(int i) {
-                    return null;
-                }
-
-                @Override
-                public void copyStringToBuffer(int i, CharArrayBuffer charArrayBuffer) {
-
-                }
-
-                @Override
-                public short getShort(int i) {
-                    return 0;
-                }
-
-                @Override
-                public int getInt(int i) {
-                    return 0;
-                }
-
-                @Override
-                public long getLong(int i) {
-                    return 0;
-                }
-
-                @Override
-                public float getFloat(int i) {
-                    return 0;
-                }
-
-                @Override
-                public double getDouble(int i) {
-                    return 0;
-                }
-
-                @Override
-                public int getType(int i) {
-                    return 0;
-                }
-
-                @Override
-                public boolean isNull(int i) {
-                    return false;
-                }
-
-                @Override
-                public void deactivate() {
-
-                }
-
-                @Override
-                public boolean requery() {
-                    return false;
-                }
-
-                @Override
-                public void close() {
-
-                }
-
-                @Override
-                public boolean isClosed() {
-                    return false;
-                }
-
-                @Override
-                public void registerContentObserver(ContentObserver contentObserver) {
-
-                }
-
-                @Override
-                public void unregisterContentObserver(ContentObserver contentObserver) {
-
-                }
-
-                @Override
-                public void registerDataSetObserver(DataSetObserver dataSetObserver) {
-
-                }
-
-                @Override
-                public void unregisterDataSetObserver(DataSetObserver dataSetObserver) {
-
-                }
-
-                @Override
-                public void setNotificationUri(ContentResolver contentResolver, Uri uri) {
-
-                }
-
-                @Override
-                public Uri getNotificationUri() {
-                    return null;
-                }
-
-                @Override
-                public boolean getWantsAllOnMoveCalls() {
-                    return false;
-                }
-
-                @Override
-                public void setExtras(Bundle bundle) {
-
-                }
-
-                @Override
-                public Bundle getExtras() {
-                    return null;
-                }
-
-                @Override
-                public Bundle respond(Bundle bundle) {
-                    return null;
-                }
-            };
+            Toast.makeText(getApplicationContext(), "Non sono stati trovati orari nella data selezionata", Toast.LENGTH_SHORT).show();
         }
 
         adapter = new CursorAdapter(this, myResult.cursor, 0) {
@@ -898,11 +686,27 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
                 btnModifica.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        /*Carica il frammento per la modifica dei dati e sistema la view*/
                         FragmentTransaction ft = fm.beginTransaction();
                         ft.show(inserimentoDatiFragment);
                         ft.commit();
+                        RelativeLayout.LayoutParams params= new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+                        params.addRule(RelativeLayout.BELOW, R.id.flInserimento);
+                        lvOrariTotali.setLayoutParams(params);
+                        /***************************************************************/
 
+                        /*Nasconde la ricerca e la ricerca avanzata*/
                         llRicerca.setVisibility(View.INVISIBLE);
+                        cAdvancedSearch.setVisibility(View.INVISIBLE);
+
+                        /*Chiude la ricerca avanzata, se visibile*/
+                        if(cAdvancedSearch.isChecked()) {
+                            cAdvancedSearch.setChecked(false);
+                            cAdvancedSearch.callOnClick();
+                        }
+
+                        Log.i("kiwi", "Nascoste le view di ricerca");
+                        /*******************************************/
 
                         Intent intent = new Intent("STRING_ID_FOR_BRODCAST");
                         int id = (int) view.getTag();
@@ -957,6 +761,9 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
             }
         };
 
+        /*Mostro le ore totali di tutti i risultati disponibili*/
+        tvTotaleOre.setText(myResult.getTotale());
+
         lvOrariTotali.setAdapter(adapter);
     }
 
@@ -965,23 +772,34 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
         startActivity(getIntent());
     }
 
+    /**
+     * Riceve i dati dal frammento per la modifica dell'orario
+     * @param codice indica l'operazione eseguita
+     * @param dati se il codice è MODIFICA_DATI, contiene l'orario modificato dall'utente da aggiornare
+     */
     @Override
     public void onInvioDati(int codice, Orario dati) {
+        /*Salvo l'orario modificato nel database e ricarico la pagina, per mostrare i dati aggiornati*/
         if(codice == MODIFICA_DATI) {
             dbManager.modificaById(dati);
 
             reload();
+        /*Elimino il frammento per la modifica dell'orario e sistemo la view*/
         } else if(codice == RIMUOVI_FRAMMENTO) {
             FragmentTransaction ft = fm.beginTransaction();
             ft.hide(inserimentoDatiFragment);
             ft.commit();
-        }
 
-        llRicerca.setVisibility(View.VISIBLE);
+            RelativeLayout.LayoutParams params= new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.addRule(RelativeLayout.BELOW, R.id.cAdvancedSearch);
+            lvOrariTotali.setLayoutParams(params);
+            llRicerca.setVisibility(View.VISIBLE);
+            cAdvancedSearch.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
-     * Define what happens if back button is pressed
+     * Definisce il comportamento dell'activity quando viene premuto il back button
      */
     @Override
     public void onBackPressed() {

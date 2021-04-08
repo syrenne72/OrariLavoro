@@ -24,7 +24,6 @@
         </activity>
         <activity android:name=".NuovoOrarioActivity"/>
         <activity android:name=".VisualizzaOrariActivity"/>
-        <activity android:name=".ModificaOrarioActivity"/>
         <activity android:name=".Impostazioni"/>
         <receiver android:name=".AlarmBroadcastReceiver"
             android:enabled="false">

@@ -225,7 +225,7 @@ public class DbManager {
     public Cursor findById(int id) {
         Cursor crs = null;
 
-        Log.i("KIWIBUNNY", this.getClass().getSimpleName() + ": " + id);
+        //Log.i("kiwi", this.getClass().getSimpleName() + ": " + id);
 
         try {
             SQLiteDatabase db = dbhelper.getReadableDatabase();
@@ -257,10 +257,12 @@ public class DbManager {
 
         int ore = 0, minuti = 0, x = 0;
 
-        /*Ordino gli orari in ordine crescente e calcolo il totale delle ore*/
+        /*Verifico se sono stati trovati dati nel database
+        * Se non sono presenti dati, restituisco null*/
         if(crs.getCount() == 0)
             return null;
 
+        /*Ordino gli orari in ordine crescente e calcolo il totale delle ore*/
         crs.moveToLast();
 
         do {
@@ -320,6 +322,11 @@ public class DbManager {
 
         MatrixCursor matrixCursor = new MatrixCursor(new String[] {DatabaseStrings.FIELD_ID, DatabaseStrings.FIELD_ANNO, DatabaseStrings.FIELD_MESE, DatabaseStrings.FIELD_GIORNO, DatabaseStrings.FIELD_DA_ORA, DatabaseStrings.FIELD_DA_MINUTO,
                 DatabaseStrings.FIELD_A_ORA, DatabaseStrings.FIELD_A_MINUTO, DatabaseStrings.FIELD_ORE_TOTALI, DatabaseStrings.FIELD_MINUTI_TOTALI});
+
+        /*Verifico se sono stati trovati dati nel database
+         * Se non sono presenti dati, restituisco null*/
+        if(crs.getCount() == 0)
+            return null;
 
         /*Ordino gli orari in ordine crescente e calcolo il totale delle ore*/
         crs.moveToLast();

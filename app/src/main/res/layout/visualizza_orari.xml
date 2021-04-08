@@ -33,7 +33,7 @@
 
         <Spinner
             android:id="@+id/sMonth"
-            android:layout_width="140dp"
+            android:layout_width="@dimen/spinner_month"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/padding_form_child"
             android:layout_marginRight="@dimen/padding_form_child"
@@ -41,7 +41,7 @@
 
         <Spinner
             android:id="@+id/sOptions"
-            android:layout_width="110dp"
+            android:layout_width="@dimen/spinner_options"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/padding_form_child"/>
 
@@ -181,7 +181,6 @@
                 android:layout_marginRight="@dimen/padding_form_child"
                 android:textSize="@dimen/text_large"
                 android:text="0"/>
-
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

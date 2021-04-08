@@ -14,6 +14,9 @@ import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
+/**
+ * BroadcastReceiver per la notifica di inserimento orario
+ */
 public class AlarmBroadcastReceiver extends BroadcastReceiver {
 
     @Override

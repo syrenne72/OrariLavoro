@@ -92,10 +92,9 @@
             android:layout_marginBottom="@dimen/padding_form_child"
             android:padding="10dp"
             android:layout_gravity="end"
-            android:background="@drawable/stile_bottone_completo"
+            android:background="@drawable/stile_bottone_completo_verde"
             android:src="@drawable/confirm"
             android:textColor="@color/dRosso"
             android:onClick="confermaDati"/>
-
     </LinearLayout>
 </RelativeLayout>
