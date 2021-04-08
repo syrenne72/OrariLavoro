@@ -15,8 +15,6 @@
 <!-- ABOUT THE PROJECT -->
 ## Progetto
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
 OrariLavoro è semplice da utilizzare ed ha un'interfaccia grafica intuitiva.
 
 ### Built
