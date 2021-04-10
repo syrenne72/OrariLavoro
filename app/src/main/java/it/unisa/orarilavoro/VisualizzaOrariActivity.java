@@ -39,6 +39,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.Group;
 import androidx.core.app.ActivityCompat;
 
 import java.io.File;
@@ -47,7 +48,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class VisualizzaOrariActivity extends AppCompatActivity implements InserimentoDati.InvioDatiListener {
-    private LinearLayout llRicerca, llAdvancedSearch;
+    private Group llRicerca;
+    private Group llAdvancedSearch;
     private ListView lvOrariTotali;
     private FrameLayout flInserimento;
     private TextView tvTotaleOre;
@@ -68,7 +70,7 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.visualizza_orari);
+        setContentView(R.layout.visualizza_orari_res);
 
         /*Richiedo i permessi di scrittura*/
         ActivityCompat.requestPermissions(VisualizzaOrariActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
@@ -330,24 +332,10 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
 
             llAdvancedSearch.setVisibility(View.VISIBLE);
             ibSearch.setVisibility(View.INVISIBLE);
-            llRicerca.setBackgroundColor(getResources().getColor(R.color.vlGrigio));
-
-            //Create space for new linear layout about advanced search
-            RelativeLayout.LayoutParams params= new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.addRule(RelativeLayout.BELOW, R.id.llAdvancedSearch);
-            params.addRule(RelativeLayout.ABOVE, R.id.llTotaleOre);
-            lvOrariTotali.setLayoutParams(params);
         } else {
             Log.d("kiwi", "Ricerca avanzata disattivata");
             llAdvancedSearch.setVisibility(View.INVISIBLE);
             ibSearch.setVisibility(View.VISIBLE);
-            llRicerca.setBackgroundColor(getResources().getColor(R.color.lRosso));
-
-            //Remove space for new linear layout about advanced search
-            RelativeLayout.LayoutParams params= new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.addRule(RelativeLayout.BELOW, R.id.cAdvancedSearch);
-            params.addRule(RelativeLayout.ABOVE, R.id.llTotaleOre);
-            lvOrariTotali.setLayoutParams(params);
         }
     }
 
@@ -690,9 +678,9 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
                         FragmentTransaction ft = fm.beginTransaction();
                         ft.show(inserimentoDatiFragment);
                         ft.commit();
-                        RelativeLayout.LayoutParams params= new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-                        params.addRule(RelativeLayout.BELOW, R.id.flInserimento);
-                        lvOrariTotali.setLayoutParams(params);
+//                        RelativeLayout.LayoutParams params= new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+//                        params.addRule(RelativeLayout.BELOW, R.id.flInserimento);
+//                        lvOrariTotali.setLayoutParams(params);
                         /***************************************************************/
 
                         /*Nasconde la ricerca e la ricerca avanzata*/
@@ -803,6 +791,7 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
      */
     @Override
     public void onBackPressed() {
+        Log.d("kiwi", "Tra poco zompo");
         if(cAdvancedSearch.isChecked()) {
             cAdvancedSearch.setChecked(false);
             cAdvancedSearch.callOnClick();

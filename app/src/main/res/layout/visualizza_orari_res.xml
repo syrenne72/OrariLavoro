@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/flInserimento"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline9"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvRicerca"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/roboto_thin"
+        android:text="Ricerca:"
+        android:textColor="@color/dGrigio"
+        android:textSize="@dimen/text_medium_max"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/sMonth"
+        android:layout_width="@dimen/spinner_month"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/sOptions"
+        app:layout_constraintStart_toEndOf="@+id/sOptions"
+        app:layout_constraintTop_toTopOf="@+id/sOptions" />
+
+    <Spinner
+        android:id="@+id/sOptions"
+        android:layout_width="@dimen/spinner_options"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvRicerca"
+        app:layout_constraintStart_toEndOf="@+id/tvRicerca"
+        app:layout_constraintTop_toTopOf="@+id/tvRicerca" />
+
+    <ImageButton
+        android:id="@+id/ibSearch"
+        android:layout_width="@dimen/button_small"
+        android:layout_height="@dimen/button_small_h"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/stile_bottone_completo_grigio"
+        android:onClick="searchSpinnerData"
+        android:src="@drawable/search"
+        app:layout_constraintBottom_toBottomOf="@+id/sMonth"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/sMonth"
+        app:layout_constraintTop_toTopOf="@+id/sMonth" />
+
+    <CheckBox
+        android:id="@+id/cAdvancedSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="onClickAdvancedSearch"
+        android:text="ricerca avanzata"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvRicerca" />
+
+    <EditText
+        android:id="@+id/etDaGiorno"
+        android:layout_width="@dimen/data"
+        android:layout_height="@dimen/edittext_h"
+        android:layout_marginStart="12dp"
+        android:focusable="false"
+        android:textAlignment="textEnd"
+        app:layout_constraintBottom_toBottomOf="@+id/textView4"
+        app:layout_constraintStart_toEndOf="@+id/textView4"
+        app:layout_constraintTop_toTopOf="@+id/textView4" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/roboto_thin"
+        android:text="Da: "
+        android:textColor="@color/dGrigio"
+        android:textSize="@dimen/text_medium_max"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cAdvancedSearch" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:fontFamily="@font/roboto_thin"
+        android:text="A: "
+        android:textColor="@color/dGrigio"
+        android:textSize="@dimen/text_medium_max"
+        app:layout_constraintBottom_toBottomOf="@+id/etDaGiorno"
+        app:layout_constraintStart_toEndOf="@+id/etDaGiorno"
+        app:layout_constraintTop_toTopOf="@+id/etDaGiorno" />
+
+    <EditText
+        android:id="@+id/etAGiorno"
+        android:layout_width="@dimen/data"
+        android:layout_height="@dimen/edittext_h"
+        android:focusable="false"
+        android:textAlignment="textEnd"
+        app:layout_constraintBottom_toBottomOf="@+id/textView8"
+        app:layout_constraintStart_toEndOf="@+id/textView8"
+        app:layout_constraintTop_toTopOf="@+id/textView8" />
+
+    <ImageButton
+        android:id="@+id/ibAdvancedSearch"
+        android:layout_width="@dimen/button_small"
+        android:layout_height="@dimen/button_small_h"
+        android:background="@drawable/stile_bottone_completo_grigio"
+        android:onClick="cercaDati"
+        android:src="@drawable/search"
+        app:layout_constraintBottom_toBottomOf="@+id/etAGiorno"
+        app:layout_constraintStart_toEndOf="@+id/etAGiorno"
+        app:layout_constraintTop_toTopOf="@+id/etAGiorno" />
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="@font/roboto_thin"
+        android:text="Ore totali:"
+        android:textColor="@color/dRosso"
+        android:textSize="@dimen/text_large"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tvTotaleOre" />
+
+    <ListView
+        android:id="@+id/lvOrariTotali"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline9" />
+
+    <ImageButton
+        android:layout_width="@dimen/button_small"
+        android:layout_height="@dimen/button_small_h"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/stile_bottone_completo_grigio"
+        android:onClick="print"
+        android:src="@drawable/print"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tvTotaleOre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="0"
+        android:textSize="@dimen/text_large"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="20dp" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="lvOrariTotali" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.2" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="788dp" />
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:alpha="0.2"
+        android:scaleType="centerCrop"
+        android:src="@drawable/background_show"
+        app:layout_constraintBottom_toTopOf="@+id/lvOrariTotali"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/llAdvancedSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:constraint_referenced_ids="etDaGiorno,textView4,textView8,etAGiorno,ibAdvancedSearch"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/llRicerca"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="tvRicerca,sMonth,sOptions,ibSearch,cAdvancedSearch" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

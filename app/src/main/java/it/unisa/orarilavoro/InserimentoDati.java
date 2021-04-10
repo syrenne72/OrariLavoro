@@ -309,7 +309,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
-import android.hardware.camera2.DngCreator;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -318,7 +317,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -352,11 +350,14 @@ public class InserimentoDati extends Fragment {
             setEditText(orario);
 
             btnIndietro.setVisibility(View.VISIBLE);
+
             if(!temp) {
                 btnIndietro.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        Log.d("kiwi", "onClick 1");
                         Calendar calendar = Calendar.getInstance();
+
                         setEditText(new Orario(-1, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH), 7, 0,
                                 calendar.get(Calendar.HOUR_OF_DAY) + 2, 0, calendar.getInstance().get(Calendar.HOUR_OF_DAY) + 2 - 7, 0));
 
@@ -375,7 +376,8 @@ public class InserimentoDati extends Fragment {
     };
 
     private TextView tvId;
-    private EditText etData, etDaOra, etAOra, etTotale;
+    private TextView tvDaOra, etAOra, etTotale;
+    private TextView etData;
     private ImageButton btnIndietro;
 
     //Widget per l'inserimento della data e degli orari
@@ -391,7 +393,7 @@ public class InserimentoDati extends Fragment {
         IntentFilter filter = new IntentFilter("STRING_ID_FOR_BRODCAST");
         getActivity().registerReceiver(receiverUpdateDownload, filter);
 
-        return inflater.inflate(R.layout.form_orario, container, false);
+        return inflater.inflate(R.layout.form_orario_res, container, false);
     }
 
     @Override
@@ -402,7 +404,7 @@ public class InserimentoDati extends Fragment {
 
         tvId = getActivity().findViewById(R.id.tvId);
         etData = getActivity().findViewById(R.id.etData);
-        etDaOra = getActivity().findViewById(R.id.etDaOra);
+        tvDaOra = getActivity().findViewById(R.id.etDaOra);
         etAOra = getActivity().findViewById(R.id.etAOra);
         etTotale = getActivity().findViewById(R.id.etTotale);
         btnIndietro = getActivity().findViewById(R.id.btnIndietro);
@@ -440,13 +442,13 @@ public class InserimentoDati extends Fragment {
         /*Setto l'orologio per la data di inizio del lavoro*/
         final int finalOraInizio = oraInizio;
 
-        etDaOra.setOnClickListener(new View.OnClickListener() {
+        tvDaOra.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 pickerDaOra = new TimePickerDialog(InserimentoDati.this.getContext(), new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int i, int i1) {
-                        etDaOra.setText(String.format("%02d:%02d", i, i1));
+                        tvDaOra.setText(String.format("%02d:%02d", i, i1));
                     }
                 }, finalOraInizio / 60, finalOraInizio % 60, true);
                 pickerDaOra.show();
@@ -484,7 +486,7 @@ public class InserimentoDati extends Fragment {
 
         /*Quando vengono inseriti gli orari di inizio e fine lavoro viene calcolato automaticamente il tempo di lavoro*/
         final int finalOraPausa = oraPausa;
-        etDaOra.addTextChangedListener(new TextWatcher() {
+        tvDaOra.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -500,7 +502,7 @@ public class InserimentoDati extends Fragment {
                 String da, a;
 
                 try {
-                    da = etDaOra.getText().toString();
+                    da = tvDaOra.getText().toString();
                     a = etAOra.getText().toString();
                     etTotale.setText(Orario.calcoloOreTotali(da, a, finalOraPausa));
                 } catch (Exception e) {
@@ -525,7 +527,7 @@ public class InserimentoDati extends Fragment {
                 String da, a;
 
                 try {
-                    da = etDaOra.getText().toString();
+                    da = tvDaOra.getText().toString();
                     a = etAOra.getText().toString();
                     etTotale.setText(Orario.calcoloOreTotali(da, a, finalOraPausa));
                 } catch (Exception e) {
@@ -543,7 +545,7 @@ public class InserimentoDati extends Fragment {
 
                 try {
                     orario.setData(etData.getText().toString());
-                    orario.setDaOra(etDaOra.getText().toString());
+                    orario.setDaOra(tvDaOra.getText().toString());
                     orario.setAOra(etAOra.getText().toString());
                     orario.setTotale(etTotale.getText().toString());
                     orario.setId(Integer.parseInt(tvId.getText().toString()));
@@ -570,10 +572,10 @@ public class InserimentoDati extends Fragment {
     }
 
     private void setEditText(Orario orario) {
-        etData.setText(orario.getData());
-        etDaOra.setText(orario.getDaOra());
-        etAOra.setText(orario.getAOra());
-        etTotale.setText(orario.getTotale());
+        etData.setText(orario.getData() + "");
+        tvDaOra.setText(orario.getDaOra() + "");
+        etAOra.setText(orario.getAOra() + "");
+        etTotale.setText(orario.getTotale() + "");
         tvId.setText(orario.id + "");
     }
 

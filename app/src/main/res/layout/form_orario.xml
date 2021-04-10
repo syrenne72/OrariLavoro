@@ -124,7 +124,7 @@
                 android:gravity="right">
 
                 <ImageButton
-                    android:visibility="invisible"
+                    android:visibility="visible"
                     android:id="@+id/btnIndietro"
                     android:layout_width="@dimen/button_small"
                     android:layout_height="@dimen/button_small"

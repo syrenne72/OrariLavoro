@@ -30,7 +30,7 @@ public class NuovoOrarioActivity extends AppCompatActivity implements Inseriment
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.nuovo_orario);
+        setContentView(R.layout.nuovo_orario_res);
 
         lvPrimiDieciOrari = findViewById(R.id.lvPrimiDieciOrari);
 

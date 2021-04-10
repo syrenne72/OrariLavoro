@@ -52,30 +52,4 @@
             android:textColor="@color/dGrigio"
             android:onClick="impostazioni"/>
     </LinearLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="5dp"
-        android:gravity="center"
-        android:text="credits Valeria Santarpia\nAll rights reserved"
-        android:fontFamily="@font/roboto_thin"
-        android:textSize="@dimen/text_small"/>
-
-    <ImageView
-        android:layout_width="@dimen/kiwi_icon"
-        android:layout_height="@dimen/kiwi_icon"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="20dp"
-        android:src="@drawable/rkiwi"/>
-
-    <ImageView
-        android:layout_width="@dimen/kiwi_icon"
-        android:layout_height="@dimen/kiwi_icon"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="20dp"
-        android:src="@drawable/lkiwi"/>
 </RelativeLayout>
