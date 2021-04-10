@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -64,18 +65,11 @@ import androidx.appcompat.app.AppCompatActivity;
 //}
 
 import android.app.TimePickerDialog;
-import android.database.Cursor;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.TimePicker;
-import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 public class Impostazioni extends AppCompatActivity {
-    private EditText etInizio, etFine, etPausa, etNome;
+    private TextView tvInizio, tvFine, tvPausa;
+    private EditText etNome;
 
     private DbManager dbManager;
     private Cursor crs;
@@ -88,10 +82,10 @@ public class Impostazioni extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.impostazioni);
 
-        etInizio = findViewById(R.id.etInizio);
-        etFine = findViewById(R.id.etFine);
+        tvInizio = findViewById(R.id.tvInizio);
+        tvFine = findViewById(R.id.tvFine);
         etNome = findViewById(R.id.etNome);
-        etPausa = findViewById(R.id.etPausa);
+        tvPausa = findViewById(R.id.tvPausa);
 
         dbManager = new DbManager(this);
         crs = dbManager.findImpostazioni();
@@ -110,21 +104,21 @@ public class Impostazioni extends AppCompatActivity {
             minutoInizio = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORA_INIZIO)) % 60;
             minutoFine = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORA_FINE)) % 60;
             minutoPausa = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORE_PAUSA)) % 60;
-            etInizio.setText(String.format("%02d:%02d", oraInizio, minutoInizio));
-            etFine.setText(String.format("%02d:%02d", oraFine, minutoFine));
-            etPausa.setText(String.format("%02d:%02d", oraPausa, minutoPausa));
+            tvInizio.setText(String.format("%02d:%02d", oraInizio, minutoInizio));
+            tvFine.setText(String.format("%02d:%02d", oraFine, minutoFine));
+            tvPausa.setText(String.format("%02d:%02d", oraPausa, minutoPausa));
             etNome.setText(crs.getString(crs.getColumnIndex(DatabaseStrings.FIELD_NOME)));
         } else
             Log.i("KIWIBUNNY", getClass().getSimpleName() + ": non ci sono dati");
 
         /*Setto l'orologio per la data di inizio del lavoro*/
-        etInizio.setOnClickListener(new View.OnClickListener() {
+        tvInizio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 pickerDaOra = new TimePickerDialog(Impostazioni.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int i, int i1) {
-                        etInizio.setText(String.format("%02d:%02d", i, i1));
+                        tvInizio.setText(String.format("%02d:%02d", i, i1));
                     }
                 }, oraInizio, minutoInizio, true);
                 pickerDaOra.show();
@@ -132,13 +126,13 @@ public class Impostazioni extends AppCompatActivity {
         });
 
         /*Setto l'orologio per la data di fine del lavoro*/
-        etFine.setOnClickListener(new View.OnClickListener() {
+        tvFine.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 pickerAOra = new TimePickerDialog(Impostazioni.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int i, int i1) {
-                        etFine.setText(String.format("%02d:%02d", i, i1));
+                        tvFine.setText(String.format("%02d:%02d", i, i1));
                     }
                 }, oraFine, minutoFine, true);
                 pickerAOra.show();
@@ -146,13 +140,13 @@ public class Impostazioni extends AppCompatActivity {
         });
 
         /*Setto l'orologio per la pausa*/
-        etPausa.setOnClickListener(new View.OnClickListener() {
+        tvPausa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 pickerPausa = new TimePickerDialog(Impostazioni.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int i, int i1) {
-                        etPausa.setText(String.format("%02d:%02d", i, i1));
+                        tvPausa.setText(String.format("%02d:%02d", i, i1));
                     }
                 }, oraPausa, minutoPausa, true);
                 pickerPausa.show();
@@ -170,9 +164,9 @@ public class Impostazioni extends AppCompatActivity {
         }
 
         try {
-            String inizio = etInizio.getText().toString();
-            String fine = etFine.getText().toString();
-            String pausa = etPausa.getText().toString();
+            String inizio = tvInizio.getText().toString();
+            String fine = tvFine.getText().toString();
+            String pausa = tvPausa.getText().toString();
 
             String strOre[] = inizio.split(":");
             oraInizio = Integer.parseInt(strOre[0]);
