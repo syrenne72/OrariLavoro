@@ -351,11 +351,12 @@ public class InserimentoDati extends Fragment {
 
             btnIndietro.setVisibility(View.VISIBLE);
 
+            Log.d("kiwi", "BroadcastReceiver: valore di temp: " + temp);
+
             if(!temp) {
                 btnIndietro.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Log.d("kiwi", "onClick 1");
                         Calendar calendar = Calendar.getInstance();
 
                         setEditText(new Orario(-1, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH), 7, 0,

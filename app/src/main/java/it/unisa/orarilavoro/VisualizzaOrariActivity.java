@@ -678,9 +678,6 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
                         FragmentTransaction ft = fm.beginTransaction();
                         ft.show(inserimentoDatiFragment);
                         ft.commit();
-//                        RelativeLayout.LayoutParams params= new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-//                        params.addRule(RelativeLayout.BELOW, R.id.flInserimento);
-//                        lvOrariTotali.setLayoutParams(params);
                         /***************************************************************/
 
                         /*Nasconde la ricerca e la ricerca avanzata*/
@@ -778,9 +775,6 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
             ft.hide(inserimentoDatiFragment);
             ft.commit();
 
-            RelativeLayout.LayoutParams params= new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.addRule(RelativeLayout.BELOW, R.id.cAdvancedSearch);
-            lvOrariTotali.setLayoutParams(params);
             llRicerca.setVisibility(View.VISIBLE);
             cAdvancedSearch.setVisibility(View.VISIBLE);
         }
