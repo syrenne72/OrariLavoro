@@ -15,6 +15,9 @@ public class DatabaseStrings {
     public static final String FIELD_ORA_INIZIO = "ora_inizio";
     public static final String FIELD_ORA_FINE = "ora_fine";
     public static final String FIELD_ORE_PAUSA = "ore_pausa";
+    public static final String FIELD_RICHIESTA_NOTIFICA = "richiesta_notifica";
+    public static final String FIELD_ORA_NOTIFICA = "ora_notifica";
+    public static final String FIELD_MINUTI_NOTIFICA = "minuti_notifica";
     public static final String TBL_NAME = "Orario";
     public static final String TBL_NAME_IMPOSTAZIONI = "Impostazioni";
 }

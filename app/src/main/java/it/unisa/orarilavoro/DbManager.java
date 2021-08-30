@@ -68,13 +68,15 @@ public class DbManager {
         }
     }
 
-    public boolean saveImpostazioni(String n, int oraInizio, int oraFine, int minutoInizio, int minutoFine, int oraPausa, int minutoPausa) {
+    public boolean saveImpostazioni(String n, int oraInizio, int oraFine, int minutoInizio, int minutoFine, int oraPausa, int minutoPausa, int notifica, int oraNotifica, int minutoNotifica) {
         SQLiteDatabase db = dbhelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(DatabaseStrings.FIELD_NOME, n);
         cv.put(DatabaseStrings.FIELD_ORA_INIZIO, oraInizio * 60 + minutoInizio);
         cv.put(DatabaseStrings.FIELD_ORA_FINE, oraFine * 60 + minutoFine);
         cv.put(DatabaseStrings.FIELD_ORE_PAUSA, oraPausa * 60 + minutoPausa);
+        cv.put(DatabaseStrings.FIELD_ORA_NOTIFICA, oraNotifica * 60 + minutoNotifica);
+        cv.put(DatabaseStrings.FIELD_RICHIESTA_NOTIFICA, notifica);
 
         try {
             db.delete(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, null, null);

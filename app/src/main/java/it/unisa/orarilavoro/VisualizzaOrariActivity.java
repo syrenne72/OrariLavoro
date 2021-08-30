@@ -302,6 +302,7 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
                 catch (Exception e){
                     e.printStackTrace();
                     Toast.makeText(getApplicationContext(), "Si è verificato un errore durante la creazione del PDF", Toast.LENGTH_SHORT).show();
+                    myPdfDocument.close();
                     return;
                 }
                 /************/
