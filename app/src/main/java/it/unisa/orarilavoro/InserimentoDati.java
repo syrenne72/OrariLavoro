@@ -304,6 +304,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Fragment;
 import android.app.TimePickerDialog;
+import android.bluetooth.le.ScanSettings;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -323,6 +324,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public class InserimentoDati extends Fragment {
     public interface InvioDatiListener {
@@ -429,12 +431,56 @@ public class InserimentoDati extends Fragment {
 
         /*Carico le impostazioni predefinite per l'orario*/
         Cursor crs = dbManager.findImpostazioni();
+
+        //Seleziono il giorno corrente
+        Calendar c = Calendar.getInstance();
+        Date date = new Date();
+        c.setTime(date);
+        int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+
+        Log.d("kiwi", getClass().getSimpleName() + ": giorno di oggi: " + dayOfWeek);
+
         int oraInizio = 7 * 60, oraFine = 18 * 60, oraPausa = 1 * 60;
 
+        //Recupero l'orario preimpostato relativo al giorno corrente
         if(crs.moveToFirst()) {
-            oraInizio = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORA_INIZIO));
-            oraFine = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORA_FINE));
-            oraPausa = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORE_PAUSA));
+            switch (dayOfWeek) {
+                case 1:
+                    oraInizio = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORA_INIZIO_L));
+                    oraFine = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORA_FINE_L));
+                    oraPausa = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORE_PAUSA_L));
+                    break;
+                case 2:
+                    oraInizio = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORA_INIZIO_M));
+                    oraFine = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORA_FINE_M));
+                    oraPausa = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORE_PAUSA_M));
+                    break;
+                case 3:
+                    oraInizio = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORA_INIZIO_ME));
+                    oraFine = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORA_FINE_ME));
+                    oraPausa = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORE_PAUSA_ME));
+                    break;
+                case 4:
+                    oraInizio = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORA_INIZIO_G));
+                    oraFine = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORA_FINE_G));
+                    oraPausa = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORE_PAUSA_G));
+                    break;
+                case 5:
+                    oraInizio = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORA_INIZIO_V));
+                    oraFine = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORA_FINE_V));
+                    oraPausa = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORE_PAUSA_V));
+                    break;
+                case 6:
+                    oraInizio = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORA_INIZIO_S));
+                    oraFine = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORA_FINE_S));
+                    oraPausa = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORE_PAUSA_S));
+                    break;
+                case 7:
+                    oraInizio = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORA_INIZIO_D));
+                    oraFine = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORA_FINE_D));
+                    oraPausa = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORE_PAUSA_D));
+                    break;
+            }
         }
         /************************************************/
 

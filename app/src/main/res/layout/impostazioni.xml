@@ -567,7 +567,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/llAvanzato" />
 
             <Switch
-                android:id="@+id/sAvanzate"
+                android:id="@+id/sAvanzato"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"

@@ -9,6 +9,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 public class DbManager {
     private DBhelper dbhelper;
     private String[] monthName = {"", "Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno",
@@ -68,7 +70,8 @@ public class DbManager {
         }
     }
 
-    public boolean saveImpostazioni(String n, int oraInizio, int oraFine, int minutoInizio, int minutoFine, int oraPausa, int minutoPausa, int notifica, int oraNotifica, int minutoNotifica) {
+    public boolean saveImpostazioni(String n, int oraInizio, int oraFine, int minutoInizio, int minutoFine,
+                                    int oraPausa, int minutoPausa, int notifica, int oraNotifica, int minutoNotifica) {
         SQLiteDatabase db = dbhelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(DatabaseStrings.FIELD_NOME, n);
@@ -77,6 +80,51 @@ public class DbManager {
         cv.put(DatabaseStrings.FIELD_ORE_PAUSA, oraPausa * 60 + minutoPausa);
         cv.put(DatabaseStrings.FIELD_ORA_NOTIFICA, oraNotifica * 60 + minutoNotifica);
         cv.put(DatabaseStrings.FIELD_RICHIESTA_NOTIFICA, notifica);
+
+        try {
+            db.delete(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, null, null);
+            if(db.insert(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, null, cv) > 0)
+                return true;
+        }
+        catch (SQLiteException sqle) {
+            sqle.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean saveImpostazioni(String n, int oraInizio, int oraFine, int minutoInizio, int minutoFine,
+                                    int oraPausa, int minutoPausa, int notifica, int oraNotifica, int minutoNotifica,
+                                    int[] orariAvanzati) {
+        SQLiteDatabase db = dbhelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(DatabaseStrings.FIELD_NOME, n);
+        cv.put(DatabaseStrings.FIELD_ORA_INIZIO, oraInizio * 60 + minutoInizio);
+        cv.put(DatabaseStrings.FIELD_ORA_FINE, oraFine * 60 + minutoFine);
+        cv.put(DatabaseStrings.FIELD_ORE_PAUSA, oraPausa * 60 + minutoPausa);
+        cv.put(DatabaseStrings.FIELD_ORA_NOTIFICA, oraNotifica * 60 + minutoNotifica);
+        cv.put(DatabaseStrings.FIELD_RICHIESTA_NOTIFICA, notifica);
+        cv.put(DatabaseStrings.FIELD_ORA_INIZIO_L, orariAvanzati[0] * 60 + orariAvanzati[1]);
+        cv.put(DatabaseStrings.FIELD_ORA_FINE_L, orariAvanzati[2] * 60 + orariAvanzati[3]);
+        cv.put(DatabaseStrings.FIELD_ORE_PAUSA_L, orariAvanzati[4] * 60 + orariAvanzati[5]);
+        cv.put(DatabaseStrings.FIELD_ORA_INIZIO_M, orariAvanzati[6] * 60 + orariAvanzati[7]);
+        cv.put(DatabaseStrings.FIELD_ORA_FINE_M, orariAvanzati[8] * 60 + orariAvanzati[9]);
+        cv.put(DatabaseStrings.FIELD_ORE_PAUSA_M, orariAvanzati[10] * 60 + orariAvanzati[11]);
+        cv.put(DatabaseStrings.FIELD_ORA_INIZIO_ME, orariAvanzati[12] * 60 + orariAvanzati[13]);
+        cv.put(DatabaseStrings.FIELD_ORA_FINE_ME, orariAvanzati[14] * 60 + orariAvanzati[15]);
+        cv.put(DatabaseStrings.FIELD_ORE_PAUSA_ME, orariAvanzati[16] * 60 + orariAvanzati[17]);
+        cv.put(DatabaseStrings.FIELD_ORA_INIZIO_G, orariAvanzati[18] * 60 + orariAvanzati[19]);
+        cv.put(DatabaseStrings.FIELD_ORA_FINE_G, orariAvanzati[20] * 60 + orariAvanzati[21]);
+        cv.put(DatabaseStrings.FIELD_ORE_PAUSA_G, orariAvanzati[22] * 60 + orariAvanzati[23]);
+        cv.put(DatabaseStrings.FIELD_ORA_INIZIO_V, orariAvanzati[24] * 60 + orariAvanzati[25]);
+        cv.put(DatabaseStrings.FIELD_ORA_FINE_V, orariAvanzati[26] * 60 + orariAvanzati[27]);
+        cv.put(DatabaseStrings.FIELD_ORE_PAUSA_V, orariAvanzati[28] * 60 + orariAvanzati[29]);
+        cv.put(DatabaseStrings.FIELD_ORA_INIZIO_S, orariAvanzati[30] * 60 + orariAvanzati[31]);
+        cv.put(DatabaseStrings.FIELD_ORA_FINE_S, orariAvanzati[32] * 60 + orariAvanzati[33]);
+        cv.put(DatabaseStrings.FIELD_ORE_PAUSA_S, orariAvanzati[34] * 60 + orariAvanzati[35]);
+        cv.put(DatabaseStrings.FIELD_ORA_INIZIO_D, orariAvanzati[36] * 60 + orariAvanzati[37]);
+        cv.put(DatabaseStrings.FIELD_ORA_FINE_D, orariAvanzati[38] * 60 + orariAvanzati[39]);
+        cv.put(DatabaseStrings.FIELD_ORE_PAUSA_D, orariAvanzati[40] * 60 + orariAvanzati[41]);
 
         try {
             db.delete(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, null, null);
@@ -385,5 +433,45 @@ public class DbManager {
         }
 
         return crs;
+    }
+
+    public int[] findOrariAvanzati() {
+        Cursor crs = null;
+        int[] orariAvanzati = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+        try {
+            SQLiteDatabase db = dbhelper.getReadableDatabase();
+            crs = db.query(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, new String[] {DatabaseStrings.FIELD_ORA_INIZIO_L, DatabaseStrings.FIELD_ORA_FINE_L,
+                    DatabaseStrings.FIELD_ORE_PAUSA_L, DatabaseStrings.FIELD_ORA_INIZIO_M, DatabaseStrings.FIELD_ORA_FINE_M,
+                            DatabaseStrings.FIELD_ORE_PAUSA_M, DatabaseStrings.FIELD_ORA_INIZIO_ME, DatabaseStrings.FIELD_ORA_FINE_ME,
+                            DatabaseStrings.FIELD_ORE_PAUSA_ME, DatabaseStrings.FIELD_ORA_INIZIO_G, DatabaseStrings.FIELD_ORA_FINE_G,
+                            DatabaseStrings.FIELD_ORE_PAUSA_G, DatabaseStrings.FIELD_ORA_INIZIO_V, DatabaseStrings.FIELD_ORA_FINE_V,
+                            DatabaseStrings.FIELD_ORE_PAUSA_V, DatabaseStrings.FIELD_ORA_INIZIO_S, DatabaseStrings.FIELD_ORA_FINE_S,
+                            DatabaseStrings.FIELD_ORE_PAUSA_S, DatabaseStrings.FIELD_ORA_INIZIO_D, DatabaseStrings.FIELD_ORA_FINE_D,
+                            DatabaseStrings.FIELD_ORE_PAUSA_D},
+                    null, null, null, null, null, null);
+
+            int j = 0;
+
+            if (crs != null && crs.moveToFirst()) {
+                for(int i = 0; i < 21; i++) {
+                    orariAvanzati[j] = crs.getInt(i) / 60;
+                    j += 1;
+                    orariAvanzati[j] = crs.getInt(i) % 60;
+
+                    Log.d("kiwi", "Orari avanzati trovati: " + orariAvanzati[j - 1] + " - " + orariAvanzati[j]);
+
+                    j += 1;
+                }
+
+                return orariAvanzati;
+            }
+
+        } catch(SQLiteException sqle) {
+            sqle.printStackTrace();
+        }
+
+        return null;
     }
 }
