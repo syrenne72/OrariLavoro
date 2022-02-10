@@ -8,7 +8,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Paint;
+import android.graphics.pdf.PdfDocument;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -78,23 +81,27 @@ import android.app.TimePickerDialog;
 import android.widget.TimePicker;
 import android.widget.ToggleButton;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class Impostazioni extends AppCompatActivity {
     private LinearLayout llAvanzato;
-    private TextView tvInizio, tvFine, tvPausa, tvNotifica;
+    private TextView tvInizio, tvFine, tvPausa;
     private EditText etNome;
     private Switch sNotifica, sAvanzato;
 
     private DbManager dbManager;
     private Cursor crs;
-    private TimePickerDialog pickerDaOra, pickerAOra, pickerPausa, pickerNotifica;
+    private TimePickerDialog pickerDaOra, pickerAOra, pickerPausa;
     private Intent intent;
     private PendingIntent pendingIntent;
     private AlarmManager alarmManager;
 
     private int oraInizio = 8, oraFine = 18, minutoInizio = 0, minutoFine = 0, oraPausa = 1, minutoPausa = 0,
-            oraNotifica = 20, minutoNotifica = 0;
+            oraNotifica = 18, minutoNotifica = 0;
 
     /*Intero che indica se si vuole ricevere la notifica giornaliera
      *1 se si vuole ricevere la notifica, 0 altrimenti*/
@@ -110,7 +117,6 @@ public class Impostazioni extends AppCompatActivity {
         tvFine = findViewById(R.id.tvFine);
         etNome = findViewById(R.id.etNome);
         tvPausa = findViewById(R.id.tvPausa);
-        tvNotifica = findViewById(R.id.tvNotifica);
         sNotifica = findViewById(R.id.sNotifica);
         sAvanzato = findViewById(R.id.sAvanzato);
 
@@ -126,10 +132,15 @@ public class Impostazioni extends AppCompatActivity {
 
     /**
      * Inserisco i dati presenti nel database negli edittext e mostro l'orologio quando ci si clicca su
+     * Inserisco il listener per la notifica
      */
     private void setView() {
         if(crs != null && crs.moveToNext()) {
+            Log.d("kiwi", getClass().getSimpleName() + "->setView: sono state trovate impostazioni salvate:");
+
             etNome.setText(crs.getString(crs.getColumnIndex(DatabaseStrings.FIELD_NOME)));
+            Log.d("kiwi", etNome.getText().toString());
+
             oraInizio = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORA_INIZIO)) / 60;
             oraFine = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORA_FINE)) / 60;
             oraPausa = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORE_PAUSA)) / 60;
@@ -138,17 +149,19 @@ public class Impostazioni extends AppCompatActivity {
             minutoFine = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORA_FINE)) % 60;
             minutoPausa = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORE_PAUSA)) % 60;
             minutoNotifica = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORA_NOTIFICA)) % 60;
+
             tvInizio.setText(String.format("%02d:%02d", oraInizio, minutoInizio));
+            Log.d("kiwi", "Ora di inizio: " + tvInizio.getText().toString());
+
             tvFine.setText(String.format("%02d:%02d", oraFine, minutoFine));
+            Log.d("kiwi", "Ora di fine: " + tvFine.getText().toString());
+
             tvPausa.setText(String.format("%02d:%02d", oraPausa, minutoPausa));
+            Log.d("kiwi", "Ora pausa: " + tvPausa.getText().toString());
 
             boolean sValue = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_RICHIESTA_NOTIFICA)) == 1;
             sNotifica.setChecked(sValue);
-
-            if(sValue) {
-                tvNotifica.setVisibility(View.VISIBLE);
-                tvNotifica.setText(String.format("%02d:%02d", oraNotifica, minutoNotifica));
-            }
+            Log.d("kiwi", "Richiesta notifica: " + sValue);
 
         } else
             Log.i("KIWIBUNNY", getClass().getSimpleName() + ": non ci sono dati");
@@ -158,7 +171,7 @@ public class Impostazioni extends AppCompatActivity {
         final int[] orariAvanzati = dbManager.findOrariAvanzati();
         int j = 0;
 
-        Log.d("kiwi", "Impostazioni: Trovati figli di LinearLayout: " + childCount);
+        //Log.d("kiwi", "Impostazioni: Trovati figli di LinearLayout: " + childCount);
 
         //Se sono stati trovati orari avanzati li inserisco nelle textview
         if(orariAvanzati != null)
@@ -170,7 +183,7 @@ public class Impostazioni extends AppCompatActivity {
 
                     tv.setText(String.format("%02d:%02d", orariAvanzati[j], orariAvanzati[j + 1]));
 
-                    Log.d("kiwi", "Impostazioni: trovati orari avanzati: " + orariAvanzati[j]);
+                    //Log.d("kiwi", "Impostazioni: trovati orari avanzati: " + orariAvanzati[j]);
 
                     final int finalJ = j;
                     tv.setOnClickListener(new View.OnClickListener() {
@@ -256,8 +269,12 @@ public class Impostazioni extends AppCompatActivity {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int i, int i1) {
                         tvInizio.setText(String.format("%02d:%02d", i, i1));
+
+                        //Salvo l'orario di inizio nel database
+                        dbManager.saveImpostazioniOraInizio(i, i1);
                     }
                 }, oraInizio, minutoInizio, true);
+
                 pickerDaOra.show();
             }
         });
@@ -270,6 +287,9 @@ public class Impostazioni extends AppCompatActivity {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int i, int i1) {
                         tvFine.setText(String.format("%02d:%02d", i, i1));
+
+                        //Salvo l'orario di fine nel database
+                        dbManager.saveImpostazioniOraFine(i, i1);
                     }
                 }, oraFine, minutoFine, true);
                 pickerAOra.show();
@@ -284,38 +304,18 @@ public class Impostazioni extends AppCompatActivity {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int i, int i1) {
                         tvPausa.setText(String.format("%02d:%02d", i, i1));
+
+                        //Salvo la durata della pausa nel database
+                        dbManager.saveImpostazioniPausa(i, i1);
                     }
                 }, oraPausa, minutoPausa, true);
                 pickerPausa.show();
             }
         });
 
-        /*Setto l'orologio per l'orario di notifica*/
-        tvNotifica.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pickerNotifica = new TimePickerDialog(Impostazioni.this, new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker timePicker, int i, int i1) {
-                        tvNotifica.setText(String.format("%02d:%02d", i, i1));
-                    }
-                }, oraNotifica, minutoNotifica, true);
-                pickerNotifica.show();
-            }
-        });
+        aggiuntaListenerNotifica();
 
-        //Metodo per verificare se lo switch è attivo
-        sNotifica.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked) {
-                    tvNotifica.setVisibility(View.VISIBLE);
-                } else {
-                    tvNotifica.setVisibility(View.INVISIBLE);
-                }
-            }
-        });
-
-        //Metodo per aprire l'impostazione avanzata per gli orari giornalieri
+        //Aggiunta del listener per aprire le impostazioni avanzate
         sAvanzato.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked) {
@@ -328,6 +328,71 @@ public class Impostazioni extends AppCompatActivity {
         });
     }
 
+    /*Aggiunta del listener allo switch di notifica
+     * Permette, se selezionato, di inserire una notifica nel database oppure, se deselezionato,
+     * di cancellare l'allarme notifica
+     **/
+    private void aggiuntaListenerNotifica() {
+        sNotifica.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                //Controllo se lo switch è stato selezionato
+                if(isChecked) {
+                    TimePickerDialog timePickerDialog = new TimePickerDialog(buttonView.getContext(), new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                            Time tme = new Time(selectedHour, selectedMinute,0);//seconds by default set to zero
+                            SimpleDateFormat formatter = new SimpleDateFormat("hh:mm");
+                            try {
+                                boolean b = dbManager.saveImpostazioni(1, selectedHour, selectedMinute);
+
+                                if(b) {
+                                    Log.d("kiwi", getClass().getSimpleName() + "->listener notifica: " +
+                                            "Inserita notifica nel database alle ore " + tme.toString());
+                                    Toast.makeText(getApplicationContext(), "Riceverai una notifica alle ore " +
+                                            String.format("%02d:%02d", selectedHour, selectedMinute), Toast.LENGTH_SHORT).show();
+                                } else
+                                    Log.d("kiwi", getClass().getSimpleName() + "->listener notifica: " +
+                                            "Si è verificato un errore durante l'inserimento della notifica nel database");
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }, oraNotifica, minutoNotifica, true);
+
+                    //Se viene premuto il tasto cancel la notifica viene rimossa
+                    timePickerDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialogInterface) {
+                            sNotifica.setChecked(false);
+                        }
+                    });
+
+                    timePickerDialog.setTitle("A che ora vuoi ricevere la notifica?");
+                    timePickerDialog.show();
+
+                //Rimuove il set della notifica dal database
+                } else {
+                    try {
+                        boolean b = dbManager.saveImpostazioni(0, oraNotifica, minutoNotifica);
+
+                        if(b)
+                            Log.d("kiwi", getClass().getSimpleName() + "->listener notifica: " +
+                                    "Cancellazione della notifica dal database");
+                        else
+                            Log.d("kiwi", getClass().getSimpleName() + "->listener notifica: " +
+                                    "Si è verificato un errore durante la cancellazione della notifica dal database");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * Salva le impostazioni indicate dall'utente relative al nome utente, all'orario di inizio, di fine e di pausa
+     * @param view bottone di conferma
+     */
     public void confermaDati(View view) {
         String n = etNome.getText().toString();
 
@@ -358,25 +423,26 @@ public class Impostazioni extends AppCompatActivity {
             return;
         }
 
-        if(tvNotifica.getVisibility() == View.VISIBLE)
-            ricNotifica = 1;
-        else {
-            oraNotifica = 20;
-            minutoNotifica = 0;
-        }
-
-        if(ricNotifica == 1) {
-            try {
-                String notifica = tvNotifica.getText().toString();
-
-                String strNotifica[] = notifica.split(":");
-                oraNotifica = Integer.parseInt(strNotifica[0]);
-                minutoNotifica = Integer.parseInt(strNotifica[1]);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(getApplicationContext(), "Inserire l'orario per la notifica", Toast.LENGTH_SHORT).show();
-            }
-        }
+        //Parte sulla notifica
+//        if(tvNotifica.getVisibility() == View.VISIBLE)
+//            ricNotifica = 1;
+//        else {
+//            oraNotifica = 20;
+//            minutoNotifica = 0;
+//        }
+//
+//        if(ricNotifica == 1) {
+//            try {
+//                String notifica = tvNotifica.getText().toString();
+//
+//                String strNotifica[] = notifica.split(":");
+//                oraNotifica = Integer.parseInt(strNotifica[0]);
+//                minutoNotifica = Integer.parseInt(strNotifica[1]);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                Toast.makeText(getApplicationContext(), "Inserire l'orario per la notifica", Toast.LENGTH_SHORT).show();
+//            }
+//        }
 
         int[] orariAvanzati = recuperaOrariAvanzati();
         //////////////////////////////////////////////////////////////

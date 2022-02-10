@@ -3,6 +3,7 @@ package it.unisa.orarilavoro;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.MatrixCursor;
 import android.database.MergeCursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -148,6 +149,200 @@ public class DbManager {
                 return true;
         }
         catch (SQLiteException sqle) {
+            sqle.printStackTrace();
+        }
+
+        return false;
+    }
+
+    /**
+     * Salva le impostazioni relative alla notifica
+     * @param notifica 0 se non si deve settare la notifica, 1 altrimenti
+     * @param oraNotifica ora della notifica
+     * @param minutoNotifica minuto della notifica
+     * @return true se le impostazioni sono state salvate correttamente, false altrimenti
+     */
+    public boolean saveImpostazioni(int notifica, int oraNotifica, int minutoNotifica) {
+        SQLiteDatabase db = dbhelper.getWritableDatabase();
+        Cursor crs = null;
+        ContentValues cv = new ContentValues();
+
+        cv.put(DatabaseStrings.FIELD_RICHIESTA_NOTIFICA, notifica);
+        cv.put(DatabaseStrings.FIELD_ORA_NOTIFICA, oraNotifica * 60 + minutoNotifica);
+
+        //Controllo se la notifica dev'essere salvata
+        if(notifica == 1) {
+            try {
+                //Recupero, se esistono, le impostazioni già salvate nel database
+                crs = db.query(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, null, null, null, null,
+                        null, null, null);
+
+                if(crs.moveToNext()) {
+                    //Aggiorno le impostazioni relative alla notifica
+                    int update = db.update(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, cv, null, null);
+
+                    if(update > 0) {
+                        Log.d("kiwi", getClass().getSimpleName() + "->saveImpostazioni: salvate le impostazioni relative " +
+                                "alla notifica");
+
+                        return true;
+                    }
+                } else {
+                    //Inserisco un nome di default per l'utente
+                    cv.put(DatabaseStrings.FIELD_NOME, "utente");
+
+                    //Salvo le impostazioni relative alla notifica per la prima volta
+                    if(db.insert(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, null, cv) > 0)
+                        return true;
+                }
+
+            } catch (SQLiteException sqle) {
+                sqle.printStackTrace();
+            }
+        //Se la notifica non dev'essere salvata elimino l'impostazione dal database
+        } else {
+            //Recupero, se esistono, le impostazioni già salvate nel database
+            crs = db.query(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, null, null, null, null,
+                    null, null, null);
+
+            if(crs.moveToNext()) {
+                //Aggiorno le impostazioni relative alla notifica
+                int update = db.update(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, cv, null, null);
+
+                if(update > 0) {
+                    Log.d("kiwi", getClass().getSimpleName() + "->saveImpostazioni: notifica eliminata");
+
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Salva le impostazioni relative all'orario di inizio lavoro
+     * @param oraInizio orario standard di inizio lavoro
+     * @param minutoInizio minuto standard di inizio lavoro
+     * @return true se le impostazioni sono state salvate correttamente, false altrimenti
+     */
+    public boolean saveImpostazioniOraInizio(int oraInizio, int minutoInizio) {
+        SQLiteDatabase db = dbhelper.getWritableDatabase();
+        Cursor crs = null;
+        ContentValues cv = new ContentValues();
+
+        cv.put(DatabaseStrings.FIELD_ORA_INIZIO, oraInizio * 60 + minutoInizio);
+
+        try {
+            //Recupero, se esistono, le impostazioni già salvate nel database
+            crs = db.query(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, null, null, null, null,
+                    null, null, null);
+
+            if(crs.moveToNext()) {
+                //Aggiorno le impostazioni relative all'orario di inizio
+                int update = db.update(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, cv, null, null);
+
+                if(update > 0) {
+                    Log.d("kiwi", getClass().getSimpleName() + "->saveImpostazioniOraInizio: salvate le impostazioni relative " +
+                            "all'orario di inizio. Nuovo orario: " + String.format("%02d:%02d", oraInizio, minutoInizio));
+
+                    return true;
+                }
+            } else {
+                //Inserisco un nome di default per l'utente
+                cv.put(DatabaseStrings.FIELD_NOME, "utente");
+
+                //Salvo le impostazioni relative all'ora di inizio per la prima volta
+                if(db.insert(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, null, cv) > 0)
+                    return true;
+            }
+        } catch (SQLiteException sqle) {
+            sqle.printStackTrace();
+        }
+
+        return false;
+    }
+
+    /**
+     * Salva le impostazioni utente relative all'orario di fine lavoro
+     * @param oraFine orario standard di fine lavoro
+     * @param minutoFine minuto standard di fine lavoro
+     * @return true se le impostazioni sono state salvate correttamente, false altrimenti
+     */
+    public boolean saveImpostazioniOraFine(int oraFine, int minutoFine) {
+        SQLiteDatabase db = dbhelper.getWritableDatabase();
+        Cursor crs = null;
+        ContentValues cv = new ContentValues();
+
+        cv.put(DatabaseStrings.FIELD_ORA_FINE, oraFine * 60 + minutoFine);
+
+        try {
+            //Recupero, se esistono, le impostazioni già salvate nel database
+            crs = db.query(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, null, null, null, null,
+                    null, null, null);
+
+            if(crs.moveToNext()) {
+                //Aggiorno le impostazioni relative all'orario di inizio
+                int update = db.update(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, cv, null, null);
+
+                if(update > 0) {
+                    Log.d("kiwi", getClass().getSimpleName() + "->saveImpostazioniOraFine: salvate le impostazioni relative " +
+                            "all'orario di fine. Nuovo orario: " + String.format("%02d:%02d", oraFine, minutoFine));
+
+                    return true;
+                }
+            } else {
+                //Inserisco un nome di default per l'utente
+                cv.put(DatabaseStrings.FIELD_NOME, "utente");
+
+                //Salvo le impostazioni relative all'ora di inizio per la prima volta
+                if(db.insert(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, null, cv) > 0)
+                    return true;
+            }
+        } catch (SQLiteException sqle) {
+            sqle.printStackTrace();
+        }
+
+        return false;
+    }
+
+    /**
+     * Salva le impostazioni utente relative alla durata della pausa
+     * @param oraPausa durata standard della pausa in ore
+     * @param minutoPausa durata standard della pausa in minuti
+     * @return true se le impostazioni sono state salvate correttamente, false altrimenti
+     */
+    public boolean saveImpostazioniPausa(int oraPausa, int minutoPausa) {
+        SQLiteDatabase db = dbhelper.getWritableDatabase();
+        Cursor crs = null;
+        ContentValues cv = new ContentValues();
+
+        cv.put(DatabaseStrings.FIELD_ORE_PAUSA, oraPausa * 60 + minutoPausa);
+
+        try {
+            //Recupero, se esistono, le impostazioni già salvate nel database
+            crs = db.query(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, null, null, null, null,
+                    null, null, null);
+
+            if(crs.moveToNext()) {
+                //Aggiorno le impostazioni relative all'orario di inizio
+                int update = db.update(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, cv, null, null);
+
+                if(update > 0) {
+                    Log.d("kiwi", getClass().getSimpleName() + "->saveImpostazioniPausa: salvate le impostazioni relative " +
+                            "all'orario di pausa. Nuovo orario: " + String.format("%02d:%02d", oraPausa, minutoPausa));
+
+                    return true;
+                }
+            } else {
+                //Inserisco un nome di default per l'utente
+                cv.put(DatabaseStrings.FIELD_NOME, "utente");
+
+                //Salvo le impostazioni relative all'ora di inizio per la prima volta
+                if(db.insert(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, null, cv) > 0)
+                    return true;
+            }
+        } catch (SQLiteException sqle) {
             sqle.printStackTrace();
         }
 
@@ -458,50 +653,51 @@ public class DbManager {
 
         /*Verifico se sono stati trovati dati nel database*/
         if(crs.getCount() == 0) {
-            Log.i("kiwi", this.getClass().getSimpleName() + ": findImpostazioni: non ci sono impostazioni salvate");
+            Log.d("kiwi", this.getClass().getSimpleName() + "->findImpostazioni: non ci sono impostazioni salvate");
         } else {
-            Log.i("kiwi", this.getClass().getSimpleName() + ": findImpostazioni: sono state trovate impostazioni salvate");
+            Log.d("kiwi", this.getClass().getSimpleName() + "->findImpostazioni: sono state trovate impostazioni salvate " +
+                    DatabaseUtils.dumpCursorToString(crs));
         }
 
         return crs;
     }
 
     public int[] findOrariAvanzati() {
-        Cursor crs = null;
-        int[] orariAvanzati = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-
-        try {
-            SQLiteDatabase db = dbhelper.getReadableDatabase();
-            crs = db.query(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, new String[] {DatabaseStrings.FIELD_ORA_INIZIO_L, DatabaseStrings.FIELD_ORA_FINE_L,
-                    DatabaseStrings.FIELD_ORE_PAUSA_L, DatabaseStrings.FIELD_ORA_INIZIO_M, DatabaseStrings.FIELD_ORA_FINE_M,
-                            DatabaseStrings.FIELD_ORE_PAUSA_M, DatabaseStrings.FIELD_ORA_INIZIO_ME, DatabaseStrings.FIELD_ORA_FINE_ME,
-                            DatabaseStrings.FIELD_ORE_PAUSA_ME, DatabaseStrings.FIELD_ORA_INIZIO_G, DatabaseStrings.FIELD_ORA_FINE_G,
-                            DatabaseStrings.FIELD_ORE_PAUSA_G, DatabaseStrings.FIELD_ORA_INIZIO_V, DatabaseStrings.FIELD_ORA_FINE_V,
-                            DatabaseStrings.FIELD_ORE_PAUSA_V, DatabaseStrings.FIELD_ORA_INIZIO_S, DatabaseStrings.FIELD_ORA_FINE_S,
-                            DatabaseStrings.FIELD_ORE_PAUSA_S, DatabaseStrings.FIELD_ORA_INIZIO_D, DatabaseStrings.FIELD_ORA_FINE_D,
-                            DatabaseStrings.FIELD_ORE_PAUSA_D},
-                    null, null, null, null, null, null);
-
-            int j = 0;
-
-            if (crs != null && crs.moveToFirst()) {
-                for(int i = 0; i < 21; i++) {
-                    orariAvanzati[j] = crs.getInt(i) / 60;
-                    j += 1;
-                    orariAvanzati[j] = crs.getInt(i) % 60;
-
-                    Log.d("kiwi", "Orari avanzati trovati: " + orariAvanzati[j - 1] + " - " + orariAvanzati[j]);
-
-                    j += 1;
-                }
-
-                return orariAvanzati;
-            }
-
-        } catch(SQLiteException sqle) {
-            sqle.printStackTrace();
-        }
+//        Cursor crs = null;
+//        int[] orariAvanzati = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+//
+//        try {
+//            SQLiteDatabase db = dbhelper.getReadableDatabase();
+//            crs = db.query(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, new String[] {DatabaseStrings.FIELD_ORA_INIZIO_L, DatabaseStrings.FIELD_ORA_FINE_L,
+//                    DatabaseStrings.FIELD_ORE_PAUSA_L, DatabaseStrings.FIELD_ORA_INIZIO_M, DatabaseStrings.FIELD_ORA_FINE_M,
+//                            DatabaseStrings.FIELD_ORE_PAUSA_M, DatabaseStrings.FIELD_ORA_INIZIO_ME, DatabaseStrings.FIELD_ORA_FINE_ME,
+//                            DatabaseStrings.FIELD_ORE_PAUSA_ME, DatabaseStrings.FIELD_ORA_INIZIO_G, DatabaseStrings.FIELD_ORA_FINE_G,
+//                            DatabaseStrings.FIELD_ORE_PAUSA_G, DatabaseStrings.FIELD_ORA_INIZIO_V, DatabaseStrings.FIELD_ORA_FINE_V,
+//                            DatabaseStrings.FIELD_ORE_PAUSA_V, DatabaseStrings.FIELD_ORA_INIZIO_S, DatabaseStrings.FIELD_ORA_FINE_S,
+//                            DatabaseStrings.FIELD_ORE_PAUSA_S, DatabaseStrings.FIELD_ORA_INIZIO_D, DatabaseStrings.FIELD_ORA_FINE_D,
+//                            DatabaseStrings.FIELD_ORE_PAUSA_D},
+//                    null, null, null, null, null, null);
+//
+//            int j = 0;
+//
+//            if (crs != null && crs.moveToFirst()) {
+//                for(int i = 0; i < 21; i++) {
+//                    orariAvanzati[j] = crs.getInt(i) / 60;
+//                    j += 1;
+//                    orariAvanzati[j] = crs.getInt(i) % 60;
+//
+//                    Log.d("kiwi", "Orari avanzati trovati: " + orariAvanzati[j - 1] + " - " + orariAvanzati[j]);
+//
+//                    j += 1;
+//                }
+//
+//                return orariAvanzati;
+//            }
+//
+//        } catch(SQLiteException sqle) {
+//            sqle.printStackTrace();
+//        }
 
         return null;
     }

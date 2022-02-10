@@ -516,41 +516,29 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_begin="161dp" />
+                app:layout_constraintGuide_begin="196dp" />
 
             <TextView
                 android:id="@+id/textView14"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Notifica:"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:text="Ricevi una notifica giornaliera:"
                 android:textSize="18sp"
                 android:visibility="visible"
-                app:layout_constraintEnd_toStartOf="@+id/guideline21"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView15" />
 
             <Switch
                 android:id="@+id/sNotifica"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginEnd="16dp"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="@+id/textView14"
-                app:layout_constraintStart_toStartOf="@+id/guideline21"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/textView14" />
-
-            <TextView
-                android:id="@+id/tvNotifica"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/edittext"
-                android:hint="20:00"
-                android:textSize="18sp"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="@+id/sNotifica"
-                app:layout_constraintStart_toEndOf="@+id/sNotifica"
-                app:layout_constraintTop_toTopOf="@+id/sNotifica" />
 
             <TextView
                 android:id="@+id/textView15"
@@ -564,7 +552,7 @@
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/llAvanzato" />
+                app:layout_constraintTop_toBottomOf="@+id/btnConfermaModifica" />
 
             <Switch
                 android:id="@+id/sAvanzato"
@@ -579,16 +567,16 @@
                 android:id="@+id/btnConfermaModifica"
                 android:layout_width="0dp"
                 android:layout_height="50sp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="32dp"
                 android:background="@drawable/stile_bottone_completo_verde"
                 android:onClick="confermaDati"
                 android:src="@drawable/confirm"
                 android:textColor="@color/dRosso"
                 android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="@+id/tvNotifica"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guideline16"
-                app:layout_constraintTop_toBottomOf="@+id/tvNotifica" />
+                app:layout_constraintTop_toBottomOf="@+id/sAvanzato" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline15"

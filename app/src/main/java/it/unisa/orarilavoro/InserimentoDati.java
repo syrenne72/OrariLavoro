@@ -441,9 +441,13 @@ public class InserimentoDati extends Fragment {
         Log.d("kiwi", getClass().getSimpleName() + ": oggi è il giorno della settimana n°: " + dayOfWeek);
 
         int oraInizio = 7 * 60, oraFine = 18 * 60, oraPausa = 1 * 60;
-
-        //Recupero l'orario preimpostato relativo al giorno corrente
         if(crs.moveToFirst()) {
+            oraInizio = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORA_INIZIO));
+            oraFine = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORA_FINE));
+            oraPausa = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORE_PAUSA));
+        }
+        //Recupero l'orario preimpostato relativo al giorno corrente
+        /*if(crs.moveToFirst()) {
             switch (dayOfWeek) {
                 case 1:
                     oraInizio = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORA_INIZIO_L));
@@ -481,7 +485,7 @@ public class InserimentoDati extends Fragment {
                     oraPausa = crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORE_PAUSA_D));
                     break;
             }
-        }
+        }*/
         /************************************************/
 
         /*Setto l'orologio per la data di inizio del lavoro*/
