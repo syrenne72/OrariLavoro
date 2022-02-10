@@ -438,7 +438,7 @@ public class InserimentoDati extends Fragment {
         c.setTime(date);
         int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
 
-        Log.d("kiwi", getClass().getSimpleName() + ": giorno di oggi: " + dayOfWeek);
+        Log.d("kiwi", getClass().getSimpleName() + ": oggi è il giorno della settimana n°: " + dayOfWeek);
 
         int oraInizio = 7 * 60, oraFine = 18 * 60, oraPausa = 1 * 60;
 

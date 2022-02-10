@@ -93,6 +93,22 @@ public class DbManager {
         return false;
     }
 
+    /**
+     * Salva le impostazioni utente
+     * @param n nome dell'utente
+     * @param oraInizio orario standard di inizio lavoro
+     * @param oraFine orario standard di fine lavoro
+     * @param minutoInizio minuto standard di inizio lavoro
+     * @param minutoFine minuto standard di fine lavoro
+     * @param oraPausa durata standard della pausa in ore
+     * @param minutoPausa durata standard della pausa in minuti
+     * @param notifica 0 se non si deve settare la notifica, 1 altrimenti
+     * @param oraNotifica ora della notifica
+     * @param minutoNotifica minuto della notifica
+     * @param orariAvanzati se non null, contiene gli orari predefiniti di inizio,
+     *                      fine e pausa per ogni giorno della settimana
+     * @return true se le impostazioni sono state salvate correttamente, false altrimenti
+     */
     public boolean saveImpostazioni(String n, int oraInizio, int oraFine, int minutoInizio, int minutoFine,
                                     int oraPausa, int minutoPausa, int notifica, int oraNotifica, int minutoNotifica,
                                     int[] orariAvanzati) {
@@ -289,6 +305,12 @@ public class DbManager {
         return crs;
     }
 
+    /**
+     * Ricerca gli orari di lavoro registrati con l'anno ed il mese passato in input
+     * @param month mese dell'anno, formato intero
+     * @param year anno, formato intero
+     * @return orari di lavoro del mese dell'anno ricevuto in input
+     */
     public MyResult findByMonthAndYear(int month, int year) {
         Cursor crs = null;
         String orderBy = DatabaseStrings.FIELD_ANNO + " DESC, " + DatabaseStrings.FIELD_MESE + " DESC, " + DatabaseStrings.FIELD_GIORNO + " DESC";
@@ -309,8 +331,10 @@ public class DbManager {
 
         /*Verifico se sono stati trovati dati nel database
         * Se non sono presenti dati, restituisco null*/
-        if(crs.getCount() == 0)
+        if(crs.getCount() == 0) {
+            Log.i("KIWIBUNNY", this.getClass().getSimpleName() + ": findByMonthAndYear: no data found");
             return null;
+        }
 
         /*Ordino gli orari in ordine crescente e calcolo il totale delle ore*/
         crs.moveToLast();
@@ -430,6 +454,13 @@ public class DbManager {
             crs = db.query(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, null, null, null, null, null, null, null);
         } catch(SQLiteException sqle) {
             sqle.printStackTrace();
+        }
+
+        /*Verifico se sono stati trovati dati nel database*/
+        if(crs.getCount() == 0) {
+            Log.i("kiwi", this.getClass().getSimpleName() + ": findImpostazioni: non ci sono impostazioni salvate");
+        } else {
+            Log.i("kiwi", this.getClass().getSimpleName() + ": findImpostazioni: sono state trovate impostazioni salvate");
         }
 
         return crs;

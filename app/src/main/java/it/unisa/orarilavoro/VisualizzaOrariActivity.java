@@ -139,7 +139,7 @@ public class VisualizzaOrariActivity extends AppCompatActivity implements Inseri
         sMonth.setSelection(Integer.parseInt(timeStamp.substring(4)));
         /******************/
 
-        //Prendo tutti gli orari memorizzati
+        //Prendo gli orari memorizzati nel mese e nell'anno corrente
         myResult = dbManager.findByMonthAndYear(Integer.parseInt(timeStamp.substring(4)), Integer.parseInt(timeStamp.substring(0, 4)));
 
         refreshListView();

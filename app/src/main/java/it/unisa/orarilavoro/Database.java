@@ -43,7 +43,7 @@ class DBhelper extends SQLiteOpenHelper {
 
         db.execSQL(q);
 
-        Log.i("KIWIBUNNY", this.getClass().getSimpleName() + ": creato database");
+        Log.i("KIWIBUNNY", this.getClass().getSimpleName() + ": database creato");
     }
 
     //Aggiunge la colonna per la richiesta della notifica
@@ -65,87 +65,87 @@ class DBhelper extends SQLiteOpenHelper {
     /*Aggiungo le colonne indicanti gli orari settimanali di inizio, fine e pausa*/
     private static final String DATABASE_ALTER_TEAM_4 = "ALTER TABLE "
             + DatabaseStrings.TBL_NAME_IMPOSTAZIONI + " ADD COLUMN "
-            + DatabaseStrings.FIELD_ORA_INIZIO_L + " INTEGER DEFAULT 0";
+            + DatabaseStrings.FIELD_ORA_INIZIO_L + " INTEGER";
 
     private static final String DATABASE_ALTER_TEAM_5 = "ALTER TABLE "
             + DatabaseStrings.TBL_NAME_IMPOSTAZIONI + " ADD COLUMN "
-            + DatabaseStrings.FIELD_ORA_INIZIO_M + " INTEGER DEFAULT 0";
+            + DatabaseStrings.FIELD_ORA_INIZIO_M + " INTEGER";
 
     private static final String DATABASE_ALTER_TEAM_6 = "ALTER TABLE "
             + DatabaseStrings.TBL_NAME_IMPOSTAZIONI + " ADD COLUMN "
-            + DatabaseStrings.FIELD_ORA_INIZIO_ME + " INTEGER DEFAULT 0";
+            + DatabaseStrings.FIELD_ORA_INIZIO_ME + " INTEGER";
 
     private static final String DATABASE_ALTER_TEAM_7 = "ALTER TABLE "
             + DatabaseStrings.TBL_NAME_IMPOSTAZIONI + " ADD COLUMN "
-            + DatabaseStrings.FIELD_ORA_INIZIO_G + " INTEGER DEFAULT 0";
+            + DatabaseStrings.FIELD_ORA_INIZIO_G + " INTEGER";
 
     private static final String DATABASE_ALTER_TEAM_8 = "ALTER TABLE "
             + DatabaseStrings.TBL_NAME_IMPOSTAZIONI + " ADD COLUMN "
-            + DatabaseStrings.FIELD_ORA_INIZIO_V + " INTEGER DEFAULT 0";
+            + DatabaseStrings.FIELD_ORA_INIZIO_V + " INTEGER";
 
     private static final String DATABASE_ALTER_TEAM_9 = "ALTER TABLE "
             + DatabaseStrings.TBL_NAME_IMPOSTAZIONI + " ADD COLUMN "
-            + DatabaseStrings.FIELD_ORA_INIZIO_S + " INTEGER DEFAULT 0";
+            + DatabaseStrings.FIELD_ORA_INIZIO_S + " INTEGER";
 
     private static final String DATABASE_ALTER_TEAM_10 = "ALTER TABLE "
             + DatabaseStrings.TBL_NAME_IMPOSTAZIONI + " ADD COLUMN "
-            + DatabaseStrings.FIELD_ORA_INIZIO_D + " INTEGER DEFAULT 0";
+            + DatabaseStrings.FIELD_ORA_INIZIO_D + " INTEGER";
 
     private static final String DATABASE_ALTER_TEAM_11 = "ALTER TABLE "
             + DatabaseStrings.TBL_NAME_IMPOSTAZIONI + " ADD COLUMN "
-            + DatabaseStrings.FIELD_ORA_FINE_L + " INTEGER DEFAULT 0";
+            + DatabaseStrings.FIELD_ORA_FINE_L + " INTEGER";
 
     private static final String DATABASE_ALTER_TEAM_12 = "ALTER TABLE "
             + DatabaseStrings.TBL_NAME_IMPOSTAZIONI + " ADD COLUMN "
-            + DatabaseStrings.FIELD_ORA_FINE_M + " INTEGER DEFAULT 0";
+            + DatabaseStrings.FIELD_ORA_FINE_M + " INTEGER";
 
     private static final String DATABASE_ALTER_TEAM_13 = "ALTER TABLE "
             + DatabaseStrings.TBL_NAME_IMPOSTAZIONI + " ADD COLUMN "
-            + DatabaseStrings.FIELD_ORA_FINE_ME + " INTEGER DEFAULT 0";
+            + DatabaseStrings.FIELD_ORA_FINE_ME + " INTEGER";
 
     private static final String DATABASE_ALTER_TEAM_14 = "ALTER TABLE "
             + DatabaseStrings.TBL_NAME_IMPOSTAZIONI + " ADD COLUMN "
-            + DatabaseStrings.FIELD_ORA_FINE_G + " INTEGER DEFAULT 0";
+            + DatabaseStrings.FIELD_ORA_FINE_G + " INTEGER";
 
     private static final String DATABASE_ALTER_TEAM_15 = "ALTER TABLE "
             + DatabaseStrings.TBL_NAME_IMPOSTAZIONI + " ADD COLUMN "
-            + DatabaseStrings.FIELD_ORA_FINE_V + " INTEGER DEFAULT 0";
+            + DatabaseStrings.FIELD_ORA_FINE_V + " INTEGER";
 
     private static final String DATABASE_ALTER_TEAM_16 = "ALTER TABLE "
             + DatabaseStrings.TBL_NAME_IMPOSTAZIONI + " ADD COLUMN "
-            + DatabaseStrings.FIELD_ORA_FINE_S + " INTEGER DEFAULT 0";
+            + DatabaseStrings.FIELD_ORA_FINE_S + " INTEGER";
 
     private static final String DATABASE_ALTER_TEAM_17 = "ALTER TABLE "
             + DatabaseStrings.TBL_NAME_IMPOSTAZIONI + " ADD COLUMN "
-            + DatabaseStrings.FIELD_ORA_FINE_D + " INTEGER DEFAULT 0";
+            + DatabaseStrings.FIELD_ORA_FINE_D + " INTEGER";
 
     private static final String DATABASE_ALTER_TEAM_18 = "ALTER TABLE "
             + DatabaseStrings.TBL_NAME_IMPOSTAZIONI + " ADD COLUMN "
-            + DatabaseStrings.FIELD_ORE_PAUSA_L + " INTEGER DEFAULT 0";
+            + DatabaseStrings.FIELD_ORE_PAUSA_L + " INTEGER";
 
     private static final String DATABASE_ALTER_TEAM_19 = "ALTER TABLE "
             + DatabaseStrings.TBL_NAME_IMPOSTAZIONI + " ADD COLUMN "
-            + DatabaseStrings.FIELD_ORE_PAUSA_M + " INTEGER DEFAULT 0";
+            + DatabaseStrings.FIELD_ORE_PAUSA_M + " INTEGER";
 
     private static final String DATABASE_ALTER_TEAM_20 = "ALTER TABLE "
             + DatabaseStrings.TBL_NAME_IMPOSTAZIONI + " ADD COLUMN "
-            + DatabaseStrings.FIELD_ORE_PAUSA_ME + " INTEGER DEFAULT 0";
+            + DatabaseStrings.FIELD_ORE_PAUSA_ME + " INTEGER";
 
     private static final String DATABASE_ALTER_TEAM_21 = "ALTER TABLE "
             + DatabaseStrings.TBL_NAME_IMPOSTAZIONI + " ADD COLUMN "
-            + DatabaseStrings.FIELD_ORE_PAUSA_G + " INTEGER DEFAULT 0";
+            + DatabaseStrings.FIELD_ORE_PAUSA_G + " INTEGER";
 
     private static final String DATABASE_ALTER_TEAM_22 = "ALTER TABLE "
             + DatabaseStrings.TBL_NAME_IMPOSTAZIONI + " ADD COLUMN "
-            + DatabaseStrings.FIELD_ORE_PAUSA_V + " INTEGER DEFAULT 0";
+            + DatabaseStrings.FIELD_ORE_PAUSA_V + " INTEGER";
 
     private static final String DATABASE_ALTER_TEAM_23 = "ALTER TABLE "
             + DatabaseStrings.TBL_NAME_IMPOSTAZIONI + " ADD COLUMN "
-            + DatabaseStrings.FIELD_ORE_PAUSA_S + " INTEGER DEFAULT 0";
+            + DatabaseStrings.FIELD_ORE_PAUSA_S + " INTEGER";
 
     private static final String DATABASE_ALTER_TEAM_24 = "ALTER TABLE "
             + DatabaseStrings.TBL_NAME_IMPOSTAZIONI + " ADD COLUMN "
-            + DatabaseStrings.FIELD_ORE_PAUSA_D + " INTEGER DEFAULT 0";
+            + DatabaseStrings.FIELD_ORE_PAUSA_D + " INTEGER";
     /**/
 
     /**
@@ -156,6 +156,8 @@ class DBhelper extends SQLiteOpenHelper {
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        Log.i("kiwi", getClass().getSimpleName() + ": vecchia versione: " + oldVersion + ", nuova versione: " + newVersion);
+
         if (oldVersion < 9) {
             db.execSQL(DATABASE_ALTER_TEAM_1);
             db.execSQL(DATABASE_ALTER_TEAM_2);

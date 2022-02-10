@@ -93,7 +93,12 @@ public class Impostazioni extends AppCompatActivity {
     private PendingIntent pendingIntent;
     private AlarmManager alarmManager;
 
-    private int oraInizio, oraFine, minutoInizio, minutoFine, oraPausa, minutoPausa, oraNotifica, minutoNotifica;
+    private int oraInizio = 8, oraFine = 18, minutoInizio = 0, minutoFine = 0, oraPausa = 1, minutoPausa = 0,
+            oraNotifica = 20, minutoNotifica = 0;
+
+    /*Intero che indica se si vuole ricevere la notifica giornaliera
+     *1 se si vuole ricevere la notifica, 0 altrimenti*/
+    private int ricNotifica = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,6 +152,101 @@ public class Impostazioni extends AppCompatActivity {
 
         } else
             Log.i("KIWIBUNNY", getClass().getSimpleName() + ": non ci sono dati");
+
+        /*Imposto le textview mostranti l'orario avanzato giornaliero*/
+        final int childCount = llAvanzato.getChildCount();
+        final int[] orariAvanzati = dbManager.findOrariAvanzati();
+        int j = 0;
+
+        Log.d("kiwi", "Impostazioni: Trovati figli di LinearLayout: " + childCount);
+
+        //Se sono stati trovati orari avanzati li inserisco nelle textview
+        if(orariAvanzati != null)
+            for (int i = 0; i < childCount; i++) {
+                LinearLayout view = (LinearLayout) llAvanzato.getChildAt(i);
+
+                for (int y = 1; y <= 3; y++) {
+                    final TextView tv = (TextView) view.getChildAt(y);
+
+                    tv.setText(String.format("%02d:%02d", orariAvanzati[j], orariAvanzati[j + 1]));
+
+                    Log.d("kiwi", "Impostazioni: trovati orari avanzati: " + orariAvanzati[j]);
+
+                    final int finalJ = j;
+                    tv.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            pickerDaOra = new TimePickerDialog(Impostazioni.this, new TimePickerDialog.OnTimeSetListener() {
+                                @Override
+                                public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                                    tv.setText(String.format("%02d:%02d", i, i1));
+                                }
+                            }, orariAvanzati[finalJ], orariAvanzati[finalJ + 1], true);
+                            pickerDaOra.show();
+                        }
+                    });
+
+                    j += 2;
+                }
+            }
+            //Se non sono stati trovati orari avanzati setto gli orari di default
+        else {
+            for (int i = 0; i < childCount; i++) {
+                LinearLayout view = (LinearLayout) llAvanzato.getChildAt(i);
+
+                TextView tv = (TextView) view.getChildAt(1);
+                tv.setText(String.format("%02d:%02d", oraInizio, minutoInizio));
+
+                final TextView finalTv = tv;
+                tv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        pickerDaOra = new TimePickerDialog(Impostazioni.this, new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                                finalTv.setText(String.format("%02d:%02d", i, i1));
+                            }
+                        }, oraInizio, minutoInizio, true);
+                        pickerDaOra.show();
+                    }
+                });
+
+                tv = (TextView) view.getChildAt(2);
+                tv.setText(String.format("%02d:%02d", oraFine, minutoFine));
+
+                final TextView finalTv1 = tv;
+                tv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        pickerDaOra = new TimePickerDialog(Impostazioni.this, new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                                finalTv1.setText(String.format("%02d:%02d", i, i1));
+                            }
+                        }, oraFine, minutoFine, true);
+                        pickerDaOra.show();
+                    }
+                });
+
+                tv = (TextView) view.getChildAt(3);
+                tv.setText(String.format("%02d:%02d", oraPausa, minutoPausa));
+
+                final TextView finalTv2 = tv;
+                tv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        pickerDaOra = new TimePickerDialog(Impostazioni.this, new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                                finalTv2.setText(String.format("%02d:%02d", i, i1));
+                            }
+                        }, oraPausa, minutoPausa, true);
+                        pickerDaOra.show();
+                    }
+                });
+            }
+        }
+        /**/
 
         /*Setto l'orologio per la data di inizio del lavoro*/
         tvInizio.setOnClickListener(new View.OnClickListener() {
@@ -220,102 +320,6 @@ public class Impostazioni extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked) {
                     llAvanzato.setVisibility(View.VISIBLE);
-
-                    /*Imposto le textview mostranti l'orario avanzato giornaliero*/
-                    final int childCount = llAvanzato.getChildCount();
-                    final int[] orariAvanzati = dbManager.findOrariAvanzati();
-
-                    int j = 0;
-
-                    Log.d("kiwi", "Impostazioni: Trovati figli di LinearLayout: " + childCount);
-
-                    //Se sono stati trovati orari avanzati li inserisco nelle textview
-                    if(orariAvanzati != null)
-                        for (int i = 0; i < childCount; i++) {
-                            LinearLayout view = (LinearLayout) llAvanzato.getChildAt(i);
-
-                            for (int y = 1; y <= 3; y++) {
-                                final TextView tv = (TextView) view.getChildAt(y);
-
-                                tv.setText(String.format("%02d:%02d", orariAvanzati[j], orariAvanzati[j + 1]));
-
-                                Log.d("kiwi", "Impostazioni: trovati orari avanzati: " + orariAvanzati[j]);
-
-                                final int finalJ = j;
-                                tv.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        pickerDaOra = new TimePickerDialog(Impostazioni.this, new TimePickerDialog.OnTimeSetListener() {
-                                            @Override
-                                            public void onTimeSet(TimePicker timePicker, int i, int i1) {
-                                                tv.setText(String.format("%02d:%02d", i, i1));
-                                            }
-                                        }, orariAvanzati[finalJ], orariAvanzati[finalJ + 1], true);
-                                        pickerDaOra.show();
-                                    }
-                                });
-
-                                j += 2;
-                            }
-                        }
-                    //Se non sono stati trovati orari avanzati setto gli orari di default
-                    else {
-                        for (int i = 0; i < childCount; i++) {
-                            LinearLayout view = (LinearLayout) llAvanzato.getChildAt(i);
-
-                            TextView tv = (TextView) view.getChildAt(1);
-                            tv.setText(String.format("%02d:%02d", oraInizio, minutoInizio));
-
-                            final TextView finalTv = tv;
-                            tv.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    pickerDaOra = new TimePickerDialog(Impostazioni.this, new TimePickerDialog.OnTimeSetListener() {
-                                        @Override
-                                        public void onTimeSet(TimePicker timePicker, int i, int i1) {
-                                            finalTv.setText(String.format("%02d:%02d", i, i1));
-                                        }
-                                    }, oraInizio, minutoInizio, true);
-                                    pickerDaOra.show();
-                                }
-                            });
-
-                            tv = (TextView) view.getChildAt(2);
-                            tv.setText(String.format("%02d:%02d", oraFine, minutoFine));
-
-                            final TextView finalTv1 = tv;
-                            tv.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    pickerDaOra = new TimePickerDialog(Impostazioni.this, new TimePickerDialog.OnTimeSetListener() {
-                                        @Override
-                                        public void onTimeSet(TimePicker timePicker, int i, int i1) {
-                                            finalTv1.setText(String.format("%02d:%02d", i, i1));
-                                        }
-                                    }, oraFine, minutoFine, true);
-                                    pickerDaOra.show();
-                                }
-                            });
-
-                            tv = (TextView) view.getChildAt(3);
-                            tv.setText(String.format("%02d:%02d", oraPausa, minutoPausa));
-
-                            final TextView finalTv2 = tv;
-                            tv.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    pickerDaOra = new TimePickerDialog(Impostazioni.this, new TimePickerDialog.OnTimeSetListener() {
-                                        @Override
-                                        public void onTimeSet(TimePicker timePicker, int i, int i1) {
-                                            finalTv2.setText(String.format("%02d:%02d", i, i1));
-                                        }
-                                    }, oraPausa, minutoPausa, true);
-                                    pickerDaOra.show();
-                                }
-                            });
-                        }
-                    }
-                    /**/
                 } else {
                     //View.GONE non fa occupare spazio alla view
                     llAvanzato.setVisibility(View.GONE);
@@ -353,9 +357,6 @@ public class Impostazioni extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Inserire tutti i dati", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        //Se è stato inserito l'orario per la notifica, questo va salvato
-        int ricNotifica = 0;
 
         if(tvNotifica.getVisibility() == View.VISIBLE)
             ricNotifica = 1;
@@ -416,6 +417,8 @@ public class Impostazioni extends AppCompatActivity {
 
         Log.d("kiwi", "Impostazioni - recuperaOrariAvanzati: Trovati figli di LinearLayout: " + childCount);
 
+        llAvanzato.setVisibility(View.VISIBLE);
+
         for (int i = 0; i < childCount; i++) {
             LinearLayout view = (LinearLayout) llAvanzato.getChildAt(i);
 
@@ -423,6 +426,8 @@ public class Impostazioni extends AppCompatActivity {
                 final TextView tv = (TextView) view.getChildAt(y);
 
                 String str[] = String.valueOf(tv.getText()).split(":");
+
+                Log.d("kiwi", getClass().getSimpleName() + ": orario avanzato trovato: " + tv.getText());
 
                 orariAvanzati[j] = Integer.parseInt(str[0]);
                 orariAvanzati[j + 1] = Integer.parseInt(str[1]);
@@ -433,6 +438,8 @@ public class Impostazioni extends AppCompatActivity {
                 j += 2;
             }
         }
+
+        llAvanzato.setVisibility(View.GONE);
 
         return orariAvanzati;
     }
