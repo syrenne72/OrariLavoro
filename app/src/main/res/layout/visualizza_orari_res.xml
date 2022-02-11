@@ -134,20 +134,22 @@
         android:id="@+id/textView9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
         android:fontFamily="@font/roboto_thin"
         android:text="Ore totali:"
         android:textColor="@color/dRosso"
         android:textSize="@dimen/text_large"
+        app:layout_constraintTop_toTopOf="@id/guideline_end"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/tvTotaleOre" />
+        app:layout_constraintEnd_toStartOf="@+id/tvTotaleOre"/>
 
     <ListView
         android:id="@+id/lvOrariTotali"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline10"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_end"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline9" />
@@ -156,23 +158,27 @@
         android:layout_width="@dimen/button_small"
         android:layout_height="@dimen/button_small_h"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/stile_bottone_completo_grigio"
         android:onClick="print"
         android:src="@drawable/print"
+        app:layout_constraintTop_toBottomOf="@id/guideline_end"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <TextView
         android:id="@+id/tvTotaleOre"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
         android:text="0"
         android:textSize="@dimen/text_large"
+        app:layout_constraintTop_toBottomOf="@id/guideline_end"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline7"
@@ -196,11 +202,11 @@
         app:layout_constraintGuide_percent="0.2" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline10"
+        android:id="@+id/guideline_end"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="788dp" />
+        app:layout_constraintGuide_percent="0.9505428" />
 
     <ImageView
         android:layout_width="0dp"
