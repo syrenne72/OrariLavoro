@@ -1,19 +1,22 @@
 package it.unisa.orarilavoro;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
-import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Paint;
-import android.graphics.pdf.PdfDocument;
 import android.os.Bundle;
-import android.os.Environment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -79,18 +82,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.TimePickerDialog;
 import android.widget.TimePicker;
-import android.widget.ToggleButton;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import com.google.android.material.textfield.TextInputEditText;
+
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+//modifica delle label e degli edittext
 public class Impostazioni extends AppCompatActivity {
     private LinearLayout llAvanzato;
     private TextView tvInizio, tvFine, tvPausa;
-    private EditText etNome;
+    private TextInputEditText etNome;
     private Switch sNotifica, sAvanzato;
 
     private DbManager dbManager;
@@ -134,6 +137,7 @@ public class Impostazioni extends AppCompatActivity {
      * Inserisco i dati presenti nel database negli edittext e mostro l'orologio quando ci si clicca su
      * Inserisco il listener per la notifica
      */
+    @SuppressLint("Range")
     private void setView() {
         if(crs != null && crs.moveToNext()) {
             Log.d("kiwi", getClass().getSimpleName() + "->setView: sono state trovate impostazioni salvate:");
@@ -313,6 +317,8 @@ public class Impostazioni extends AppCompatActivity {
             }
         });
 
+        aggiuntaListenerNome();
+
         aggiuntaListenerNotifica();
 
         //Aggiunta del listener per aprire le impostazioni avanzate
@@ -324,6 +330,36 @@ public class Impostazioni extends AppCompatActivity {
                     //View.GONE non fa occupare spazio alla view
                     llAvanzato.setVisibility(View.GONE);
                 }
+            }
+        });
+    }
+
+    /**
+     * Aggiunge un listener all'edittext che permette di salvare il nome utente digitato dopo aver premuto invio
+     */
+    private void aggiuntaListenerNome() {
+        etNome.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    if(dbManager.saveImpostazioniNome(textView.getText().toString())) {
+                        Log.d("kiwi", getClass().getSimpleName() + "->afterTextChanged: Il nuovo nome utente è: "
+                                + textView.getText().toString());
+
+                        //Chiude la tastiera
+                        InputMethodManager inputManager = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
+                        //Rimuove il focus ma rende ancora cliccabile l'edittext
+                        textView.setFocusableInTouchMode(false);
+                        textView.setFocusable(false);
+                        textView.setFocusableInTouchMode(true);
+                        textView.setFocusable(true);
+
+                        return true;
+                    }
+                }
+                return false;
             }
         });
     }
@@ -343,7 +379,7 @@ public class Impostazioni extends AppCompatActivity {
                             Time tme = new Time(selectedHour, selectedMinute,0);//seconds by default set to zero
                             SimpleDateFormat formatter = new SimpleDateFormat("hh:mm");
                             try {
-                                boolean b = dbManager.saveImpostazioni(1, selectedHour, selectedMinute);
+                                boolean b = dbManager.saveImpostazioniNotifica(1, selectedHour, selectedMinute);
 
                                 if(b) {
                                     Log.d("kiwi", getClass().getSimpleName() + "->listener notifica: " +
@@ -373,7 +409,7 @@ public class Impostazioni extends AppCompatActivity {
                 //Rimuove il set della notifica dal database
                 } else {
                     try {
-                        boolean b = dbManager.saveImpostazioni(0, oraNotifica, minutoNotifica);
+                        boolean b = dbManager.saveImpostazioniNotifica(0, oraNotifica, minutoNotifica);
 
                         if(b)
                             Log.d("kiwi", getClass().getSimpleName() + "->listener notifica: " +
@@ -387,92 +423,6 @@ public class Impostazioni extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    /**
-     * Salva le impostazioni indicate dall'utente relative al nome utente, all'orario di inizio, di fine e di pausa
-     * @param view bottone di conferma
-     */
-    public void confermaDati(View view) {
-        String n = etNome.getText().toString();
-
-        if(n.length() == 0) {
-            Toast.makeText(getApplicationContext(), "Inserire tutti i dati", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        try {
-            String inizio = tvInizio.getText().toString();
-            String fine = tvFine.getText().toString();
-            String pausa = tvPausa.getText().toString();
-
-            String strOre[] = inizio.split(":");
-            oraInizio = Integer.parseInt(strOre[0]);
-            minutoInizio = Integer.parseInt(strOre[1]);
-
-            strOre = fine.split(":");
-            oraFine = Integer.parseInt(strOre[0]);
-            minutoFine = Integer.parseInt(strOre[1]);
-
-            strOre = pausa.split(":");
-            oraPausa = Integer.parseInt(strOre[0]);
-            minutoPausa = Integer.parseInt(strOre[1]);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(getApplicationContext(), "Inserire tutti i dati", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        //Parte sulla notifica
-//        if(tvNotifica.getVisibility() == View.VISIBLE)
-//            ricNotifica = 1;
-//        else {
-//            oraNotifica = 20;
-//            minutoNotifica = 0;
-//        }
-//
-//        if(ricNotifica == 1) {
-//            try {
-//                String notifica = tvNotifica.getText().toString();
-//
-//                String strNotifica[] = notifica.split(":");
-//                oraNotifica = Integer.parseInt(strNotifica[0]);
-//                minutoNotifica = Integer.parseInt(strNotifica[1]);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                Toast.makeText(getApplicationContext(), "Inserire l'orario per la notifica", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-
-        int[] orariAvanzati = recuperaOrariAvanzati();
-        //////////////////////////////////////////////////////////////
-
-        if(dbManager.saveImpostazioni(n, oraInizio, oraFine, minutoInizio, minutoFine, oraPausa, minutoPausa,
-                ricNotifica, oraNotifica, minutoNotifica, orariAvanzati))
-            if(ricNotifica == 0)
-                Toast.makeText(getApplicationContext(), "Impostazioni salvate", Toast.LENGTH_SHORT).show();
-            else if(ricNotifica == 1) {
-                //Verifico se settare la notifica oppure cancellarla
-                if(crs != null && crs.moveToNext()) {
-                    if (crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_RICHIESTA_NOTIFICA)) == 1)
-                        Log.d("kiwi", "Creating alarm");
-                    myAlarm();
-                } else
-                    alarmManager.cancel(pendingIntent);
-
-                AlertDialog alertDialog = new AlertDialog.Builder(Impostazioni.this).create();
-                alertDialog.setTitle("Notifica impostata");
-                alertDialog.setMessage("La notifica è stata impostata correttamente\nL'orario selezionato potrebbe variare leggermente");
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                alertDialog.show();
-            }
-        else
-            Toast.makeText(getApplicationContext(), "Si è verificato un errore", Toast.LENGTH_SHORT).show();
     }
 
     private int[] recuperaOrariAvanzati() {
@@ -513,6 +463,7 @@ public class Impostazioni extends AppCompatActivity {
     /**
      * Crea una notifica che ricorda all'utente di inserire l'orario giornaliero
      */
+    @SuppressLint("Range")
     public void myAlarm() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, crs.getInt(crs.getColumnIndex(DatabaseStrings.FIELD_ORA_NOTIFICA)) / 60);

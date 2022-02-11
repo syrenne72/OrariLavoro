@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="auto"
     tools:context=".Impostazioni">
 
     <TextView
@@ -20,14 +21,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/ivImmagineDiSfondo"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:alpha="0.2"
         android:scaleType="centerCrop"
         android:src="@drawable/background_settings"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/lvOrariTotali"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -75,12 +75,40 @@
         android:layout_marginBottom="24dp"
         app:layout_constraintBottom_toTopOf="@+id/textView16"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tfNomeUtente"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="64dp"
+                android:layout_marginEnd="16dp"
+
+                android:hint="Nome utente"
+                app:endIconDrawable="@drawable/account_24"
+                app:endIconMode="custom"
+                app:expandedHintEnabled="false"
+                app:hintTextAppearance="@style/TextLabel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etNome"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    tools:imeOptions="actionDone" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
                 android:id="@+id/llAvanzato"
@@ -88,10 +116,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:orientation="vertical"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/guideline15"
-                android:visibility="gone">
+                app:layout_constraintTop_toTopOf="@+id/guideline15">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -140,7 +168,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:gravity="center"
-                    android:orientation="horizontal" >
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/textView25"
@@ -396,38 +424,27 @@
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/textView10"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="80dp"
-                android:layout_marginEnd="8dp"
-                android:text="Nome: "
-                android:textSize="18sp"
-                app:layout_constraintEnd_toStartOf="@+id/etNome"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <EditText
-                android:id="@+id/etNome"
+                android:id="@+id/etNome1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
+                android:layout_marginStart="16dp"
                 android:hint="ilmionome"
                 android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="@+id/textView10"
-                app:layout_constraintStart_toStartOf="@+id/guideline21"
-                app:layout_constraintTop_toTopOf="@+id/textView10" />
+                android:visibility="invisible"
+                app:layout_constraintBottom_toTopOf="@+id/textView11"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/textView11"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
                 android:text="Ora di inizio: "
                 android:textSize="18sp"
                 app:layout_constraintEnd_toStartOf="@+id/tvInizio"
-                app:layout_constraintTop_toBottomOf="@+id/textView10" />
+                app:layout_constraintTop_toBottomOf="@+id/tfNomeUtente" />
 
             <TextView
                 android:id="@+id/textView12"
@@ -535,6 +552,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="@+id/textView14"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -545,14 +564,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="24dp"
                 android:layout_marginEnd="16dp"
                 android:gravity="center"
                 android:text="Imposta una notifica per non dimenticare mai di segnare le tue ore lavorative"
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnConfermaModifica" />
+                app:layout_constraintTop_toBottomOf="@+id/textView13" />
 
             <Switch
                 android:id="@+id/sAvanzato"
@@ -560,23 +579,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:text="avanzato"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toTopOf="@+id/guideline15"
                 app:layout_constraintStart_toEndOf="@+id/tvPausa" />
-
-            <ImageButton
-                android:id="@+id/btnConfermaModifica"
-                android:layout_width="0dp"
-                android:layout_height="50sp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="32dp"
-                android:background="@drawable/stile_bottone_completo_verde"
-                android:onClick="confermaDati"
-                android:src="@drawable/confirm"
-                android:textColor="@color/dRosso"
-                android:visibility="visible"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/guideline16"
-                app:layout_constraintTop_toBottomOf="@+id/sAvanzato" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline15"

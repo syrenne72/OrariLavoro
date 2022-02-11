@@ -1,5 +1,6 @@
 package it.unisa.orarilavoro;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -156,13 +157,55 @@ public class DbManager {
     }
 
     /**
+     * Salva le impostazioni utente relative al nome
+     * @param nome nome dell'utente
+     * @return true se le impostazioni sono state salvate correttamente, false altrimenti
+     */
+    public boolean saveImpostazioniNome(String nome) {
+        SQLiteDatabase db = dbhelper.getWritableDatabase();
+        Cursor crs = null;
+        ContentValues cv = new ContentValues();
+
+        cv.put(DatabaseStrings.FIELD_NOME, nome);
+
+        try {
+            //Recupero, se esistono, le impostazioni già salvate nel database
+            crs = db.query(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, null, null, null, null,
+                    null, null, null);
+
+            if(crs.moveToNext()) {
+                //Aggiorno le impostazioni relative all'orario di inizio
+                int update = db.update(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, cv, null, null);
+
+                if(update > 0) {
+                    Log.d("kiwi", getClass().getSimpleName() + "->saveImpostazioniNome: salvate le impostazioni relative " +
+                            "al nome utente. Nuovo nome: " + nome);
+
+                    return true;
+                }
+            } else {
+                //Inserisco per la prima volta la riga di impostazioni
+                cv.put(DatabaseStrings.FIELD_NOME, nome);
+
+                //Salvo le impostazioni per la prima volta
+                if(db.insert(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, null, cv) > 0)
+                    return true;
+            }
+        } catch (SQLiteException sqle) {
+            sqle.printStackTrace();
+        }
+
+        return false;
+    }
+
+    /**
      * Salva le impostazioni relative alla notifica
      * @param notifica 0 se non si deve settare la notifica, 1 altrimenti
      * @param oraNotifica ora della notifica
      * @param minutoNotifica minuto della notifica
      * @return true se le impostazioni sono state salvate correttamente, false altrimenti
      */
-    public boolean saveImpostazioni(int notifica, int oraNotifica, int minutoNotifica) {
+    public boolean saveImpostazioniNotifica(int notifica, int oraNotifica, int minutoNotifica) {
         SQLiteDatabase db = dbhelper.getWritableDatabase();
         Cursor crs = null;
         ContentValues cv = new ContentValues();
@@ -182,7 +225,7 @@ public class DbManager {
                     int update = db.update(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, cv, null, null);
 
                     if(update > 0) {
-                        Log.d("kiwi", getClass().getSimpleName() + "->saveImpostazioni: salvate le impostazioni relative " +
+                        Log.d("kiwi", getClass().getSimpleName() + "->saveImpostazioniNotifica: salvate le impostazioni relative " +
                                 "alla notifica");
 
                         return true;
@@ -210,7 +253,7 @@ public class DbManager {
                 int update = db.update(DatabaseStrings.TBL_NAME_IMPOSTAZIONI, cv, null, null);
 
                 if(update > 0) {
-                    Log.d("kiwi", getClass().getSimpleName() + "->saveImpostazioni: notifica eliminata");
+                    Log.d("kiwi", getClass().getSimpleName() + "->saveImpostazioniNotifica: notifica eliminata");
 
                     return true;
                 }
@@ -409,6 +452,7 @@ public class DbManager {
         return crs;
     }
 
+    @SuppressLint("Range")
     public MyResult findAll(int num) {
         Cursor crs = null;
         String orderBy = DatabaseStrings.FIELD_ANNO + " DESC, " + DatabaseStrings.FIELD_MESE + " DESC, " + DatabaseStrings.FIELD_GIORNO + " DESC";
@@ -506,6 +550,7 @@ public class DbManager {
      * @param year anno, formato intero
      * @return orari di lavoro del mese dell'anno ricevuto in input
      */
+    @SuppressLint("Range")
     public MyResult findByMonthAndYear(int month, int year) {
         Cursor crs = null;
         String orderBy = DatabaseStrings.FIELD_ANNO + " DESC, " + DatabaseStrings.FIELD_MESE + " DESC, " + DatabaseStrings.FIELD_GIORNO + " DESC";
@@ -569,6 +614,7 @@ public class DbManager {
         return myResult;
     }
 
+    @SuppressLint("Range")
     public MyResult findBetweenTwoDates(int daG, int daM, int daA, int aG, int aM, int aA) {
         Cursor crs = null;
         String orderBy = DatabaseStrings.FIELD_ANNO + " DESC, " + DatabaseStrings.FIELD_MESE + " DESC, " + DatabaseStrings.FIELD_GIORNO + " DESC";

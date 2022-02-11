@@ -7,4 +7,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- Label per l'inserimento del testo -->
+    <style name="TextLabel" parent="TextAppearance.Design.Hint">
+        <item name="android:textSize">18sp</item>
+    </style>
+
 </resources>
